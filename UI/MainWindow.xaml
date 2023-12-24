@@ -19,14 +19,47 @@
 
     <Viewbox>
         <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="39*" />
+            </Grid.ColumnDefinitions>
+            <Menu Grid.ColumnSpan="2">
+                <MenuItem Header="_File">
+                    <MenuItem Click="Save" Header="_Save" />
+                    <Separator />
+                    <MenuItem Click="FileExit_Click" Header="_Exit" />
+                </MenuItem>
+
+                <MenuItem Header="_Tools">
+                    <MenuItem Click="AdvancedSettings_Click" Header="Advanced Settings" />
+                    <MenuItem Click="Refresh_Rules" Header="Refresh Rules List" />
+                    <MenuItem Header="Update Overlay" />
+                </MenuItem>
+
+                <MenuItem Header="_About">
+                    <MenuItem>
+                        <MenuItem.Header>
+                            <TextBlock TextDecorations="None">
+                                <Hyperlink
+                                    NavigateUri="https://github.com/tzoug/NLOverlay"
+                                    RequestNavigate="Hyperlink_RequestNavigate"
+                                    TextDecorations="None">
+                                    Visit GitHub
+                                </Hyperlink>
+                            </TextBlock>
+                        </MenuItem.Header>
+                    </MenuItem>
+                </MenuItem>
+            </Menu>
+
             <ListView
                 x:Name="RulesListView"
-                Grid.RowSpan="3"
-                Width="300"
-                Height="530"
-                Margin="-20,0,0,0"
+                Grid.ColumnSpan="2"
+                Width="285"
+                Height="468"
+                Margin="-9,35,0,0"
                 HorizontalAlignment="Left"
-                VerticalAlignment="Bottom"
+                VerticalAlignment="Top"
                 BorderThickness="1"
                 ItemsSource="{Binding ruleViewModels}"
                 SelectionChanged="RulesListView_SelectionChanged">
@@ -47,9 +80,10 @@
             </ListView>
 
             <Button
+                Grid.Column="1"
                 Width="40"
                 Height="30"
-                Margin="305,20,0,0"
+                Margin="298,20,0,0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top"
                 hc:IconElement.Geometry="{StaticResource SaveGeometry}"
@@ -57,17 +91,10 @@
                 Style="{StaticResource ButtonPrimary}" />
 
             <Button
-                Width="40"
-                Height="30"
-                Margin="365,20,0,0"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Top"
-                Style="{StaticResource ButtonPrimary}" />
-
-            <Button
+                Grid.Column="1"
                 Width="103"
                 Height="30"
-                Margin="650,20,0,0"
+                Margin="614,15,0,0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top"
                 Click="Launch_Overlay"
@@ -77,11 +104,12 @@
 
             <hc:PropertyGrid
                 x:Name="PropertyGrid"
-                Width="465"
-                Height="460"
-                Margin="295,0,0,-50"
+                Grid.Column="1"
+                Width="445"
+                Height="430"
+                Margin="286,73,0,0"
                 HorizontalAlignment="Left"
-                VerticalAlignment="Center" />
+                VerticalAlignment="Top" />
         </Grid>
     </Viewbox>
 

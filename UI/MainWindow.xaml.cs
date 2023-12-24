@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Navigation;
 using UI.ViewModels;
 using MessageBox = HandyControl.Controls.MessageBox;
 using Window = System.Windows.Window;
@@ -142,6 +143,7 @@ namespace UI
             if (_overlayWindow == null || !_overlayWindow.IsVisible)
             {
                 var overlayWindow = new OverlayWindow();
+                overlayWindow.Owner = this;
                 overlayWindow.Show();
             }
             else
@@ -190,7 +192,19 @@ namespace UI
             Close();
         }
 
-        #endregion
+        private void AdvancedSettings_Click(object sender, RoutedEventArgs e)
+        {
+            var advancedSettingsWindow = new AdvancedSetings();
+            advancedSettingsWindow.Owner = this;
+            advancedSettingsWindow.Show();
+        }
 
+        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(e.Uri.AbsoluteUri));
+            e.Handled = true;
+        }
+
+        #endregion
     }
 }
