@@ -6,6 +6,6 @@ namespace UI.Classes
     {
         public bool IsEnabled { get; set; }
 
-        public TimeSpan Value { get; set; }
+        public int Seconds { get; set; }
     }
 }
