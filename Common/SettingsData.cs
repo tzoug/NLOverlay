@@ -105,7 +105,7 @@ namespace Common
         private string GetFilePath()
         {
             var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            var saveFolder = Path.Combine(documentsPath, "NetLimiterOverlay");
+            var saveFolder = Path.Combine(documentsPath, "NLOverlay");
             if (!Directory.Exists(saveFolder))
             {
                 Directory.CreateDirectory(saveFolder);
