@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace Common
 {
@@ -20,16 +19,20 @@ namespace Common
         /// <summary>
         /// List of IDs of enabled rules (for overlay)
         /// </summary>
+        [Browsable(false)]
         public List<string> EnabledRuleIds { get; set; }
 
         /// <summary>
         /// Overlay opacity
         /// </summary>
+        [Browsable(false)]
         public string OverlayOpacity { get; set; }
 
         /// <summary>
         /// API Polling Rate
         /// </summary>
+        [DisplayName("API Polling Rate (ms)")]
+        [Category("Advanced")]
         public string ApiPollingRate { get; set; }
 
         public SettingsData() {
