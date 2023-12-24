@@ -132,7 +132,7 @@ namespace UI
         {
             if (RulesListView.SelectedItem is RuleViewModel selectedRule)
             {
-                UpdateRules();
+                //UpdateRules();
                 PropertyGrid.SelectedObject = selectedRule;
             }
         }
@@ -176,12 +176,12 @@ namespace UI
             if (validationResult.IsValid)
             {
                 _settings.Save();
-                MessageBox.Show("Saved", "Save", MessageBoxButton.OK);
+                MessageBox.Show("Saved", "Save");
             }
             else
             {
                 var output = validationResult.Errors.ConcatStringsForMessageBox();
-                MessageBox.Show(output, "Error Saving", MessageBoxButton.OK);
+                MessageBox.Show(output, "Error Saving") ;
             }
         }
 
