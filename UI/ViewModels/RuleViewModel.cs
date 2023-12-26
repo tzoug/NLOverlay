@@ -10,71 +10,8 @@ namespace UI.ViewModels
         private bool _showOnOverlay;
         private string _ruleFor;
         private Rule _rule;
-        private Threshold _threshold = new Threshold();
-
-        [Category("Options")]
-        [ReadOnly(false)]
-        [DisplayName("Show On Overlay")]
-        public bool ShowOnOverlay
-        {
-            get => _showOnOverlay;
-            set
-            {
-                if (_showOnOverlay != value)
-                {
-                    _showOnOverlay = value;
-                    OnPropertyChanged(nameof(ShowOnOverlay));
-                }
-            }
-        }
-
-        [Category("Options")]
-        [ReadOnly(false)]
-        [DisplayName("Threshold Enabled")]
-        public bool ThresholdEnabled
-        {
-            get => _threshold == null ? false : _threshold.IsEnabled;
-            set
-            {
-                if (_threshold.IsEnabled != value)
-                {
-                    _threshold.IsEnabled = value;
-                    OnPropertyChanged(nameof(Threshold));
-                }
-            }
-        }
-
-        [Category("Options")]
-        [ReadOnly(false)]
-        [DisplayName("Threshold Value")]
-        public TimeSpan ThresholdSpan
-        {
-            get => _threshold == null ? TimeSpan.Zero : _threshold.Value;
-            set
-            {
-                if (_threshold.Value != value)
-                {
-                    _threshold.Value = value;
-                    OnPropertyChanged(nameof(Threshold));
-                }
-            }
-        }
-
-        [Category("General")]
-        [ReadOnly(true)]
-        [DisplayName("Name")]
-        public string RuleFor
-        {
-            get => _ruleFor; 
-            set
-            {
-                if (_ruleFor != value)
-                {
-                    _ruleFor = value;
-                    OnPropertyChanged(nameof(RuleFor));
-                }
-            }
-        }
+        private bool _isThresholdEnabled;
+        private int _thresholdSeconds;
 
         [Browsable(false)]
         public Rule Rule
@@ -92,13 +29,81 @@ namespace UI.ViewModels
 
         [Category("General")]
         [ReadOnly(true)]
-        [DisplayName("State")]
-        public RuleState State => _rule.State;
+        [DisplayName("Name")]
+        public string RuleFor
+        {
+            get => _ruleFor;
+            set
+            {
+                if (_ruleFor != value)
+                {
+                    _ruleFor = value;
+                    OnPropertyChanged(nameof(RuleFor));
+                }
+            }
+        }
 
         [Category("General")]
         [DisplayName("ID")]
         [ReadOnly(true)]
         public string Id => _rule.Id;
+
+        [Category("General")]
+        [ReadOnly(true)]
+        [DisplayName("State")]
+        public RuleState State => _rule.State;
+
+        [Category("Options")]
+        [ReadOnly(false)]
+        [DisplayName("Show On Overlay")]
+        public bool ShowOnOverlay
+        {
+            get => _showOnOverlay;
+            set
+            {
+                if (_showOnOverlay != value)
+                {
+                    _showOnOverlay = value;
+                    OnPropertyChanged(nameof(ShowOnOverlay));
+                }
+            }
+        }
+
+        [Browsable(true)]
+        [Category("Options")]
+        [DisplayName("Threshold Enabled")]
+        public bool IsThresholdEnabled 
+        {
+            get => _isThresholdEnabled;
+            set
+            {
+                if (_isThresholdEnabled != value)
+                {
+                    _isThresholdEnabled = value;
+                    OnPropertyChanged(nameof(IsThresholdEnabled));
+                }
+            }
+        }
+
+        [Category("Options")]
+        [Browsable(true)]
+        [DisplayName("Threshold (s)")]
+        public int ThresholdSeconds
+        {
+            get => _thresholdSeconds;
+            set
+            {
+                if (_thresholdSeconds != value)
+                {
+                    _thresholdSeconds = value;
+                    OnPropertyChanged(nameof(ThresholdSeconds));
+                }
+            }
+        }
+
+        [Browsable(false)]
+        public bool IsPassedThreshold => IsThresholdEnabled && UpdateInterval.TotalSeconds >= ThresholdSeconds;
+
 
         [Browsable(false)]
         public TimeSpan UpdateInterval => DateTime.Now - _rule.UpdatedTime.ToLocalTime();
@@ -110,16 +115,9 @@ namespace UI.ViewModels
             {
                 var elapsedTime = DateTime.Now - _rule.UpdatedTime.ToLocalTime();
 
-                if (elapsedTime.TotalMinutes < 1)
-                {
-                    // Less than a minute, display as seconds and milliseconds
-                    return $"{elapsedTime.Seconds}s.{elapsedTime.Milliseconds}ms";
-                }
-                else
-                {
-                    // More than a minute, display as minutes, seconds, and milliseconds
-                    return $"{elapsedTime.Minutes}m.{elapsedTime.Seconds}s.{elapsedTime.Milliseconds}ms";
-                }
+                return elapsedTime.TotalMinutes > 1
+                    ? $"{elapsedTime.Seconds}s.{elapsedTime.Milliseconds}ms"
+                    : $"{elapsedTime.Minutes}m.{elapsedTime.Seconds}s.{elapsedTime.Milliseconds}ms";
             }
         }
 

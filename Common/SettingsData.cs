@@ -8,25 +8,16 @@ namespace Common
 {
     public class SettingsData
     {
-        private const int MinOverlayOpacity = 0;
-        private const int MaxOverlayOpacity = 100;
         private const int MinApiPollingRate = 0;
         private const int MaxApiPollingRate = 60000;
 
-        private const int DefaultOverlayOpacity = 20;
         private const int DefaultApiPollingRate = 1000;
 
         /// <summary>
         /// List of IDs of enabled rules (for overlay)
         /// </summary>
         [Browsable(false)]
-        public List<string> EnabledRuleIds { get; set; }
-
-        /// <summary>
-        /// Overlay opacity
-        /// </summary>
-        [Browsable(false)]
-        public string OverlayOpacity { get; set; }
+        public List<string> RulesOnOverlay { get; set; }
 
         /// <summary>
         /// API Polling Rate
@@ -35,10 +26,13 @@ namespace Common
         [Category("Advanced")]
         public string ApiPollingRate { get; set; }
 
+        [Browsable(false)]
+        public Dictionary<string, int> Thresholds { get; set; }
+
         public SettingsData() {
-            EnabledRuleIds = new List<string>();
-            OverlayOpacity = DefaultOverlayOpacity.ToString();
+            RulesOnOverlay = new List<string>();
             ApiPollingRate = DefaultApiPollingRate.ToString();
+            Thresholds = new Dictionary<string, int>();
         }
 
         public void Save()
@@ -62,9 +56,10 @@ namespace Common
 
                     if (validationResult.IsValid)
                     {
-                        EnabledRuleIds = data.EnabledRuleIds;
-                        OverlayOpacity = data.OverlayOpacity;
+                        // TODO Check for matching rules and no random values
+                        RulesOnOverlay = data.RulesOnOverlay; 
                         ApiPollingRate = data.ApiPollingRate;
+                        Thresholds = data.Thresholds;
                     }
                 }
             }
@@ -79,8 +74,8 @@ namespace Common
             var validationResults = new List<ValidationResult>();
 
             ValidateEnabledRules(validationResults);
-            ValidateOverlayOpacity(validationResults);
             ValidateApiPollingRate(validationResults);
+            ValidateThresholds(validationResults);
 
             return new ValidationResult(validationResults);
         }
@@ -89,19 +84,24 @@ namespace Common
         {
         }
 
-        private void ValidateOverlayOpacity(List<ValidationResult> results)
-        {
-            if (!int.TryParse(OverlayOpacity, out var number) || number < MinOverlayOpacity || number > MaxOverlayOpacity)
-            {
-                results.Add(new ValidationResult("Overlay Opacity must be between 0 and 100."));
-            }
-        }
-
         private void ValidateApiPollingRate(List<ValidationResult> results)
         {
             if (!int.TryParse(ApiPollingRate, out var number) || number < MinApiPollingRate || number > MaxApiPollingRate)
             {
                 results.Add(new ValidationResult("API Polling Rate must be between 0 and 60000 ms."));
+            }
+        }
+
+        private void ValidateThresholds(List<ValidationResult> results)
+        {
+            // Ensure no values that are negative
+            foreach (var values in Thresholds.Values) 
+            {
+                if (values < 0)
+                {
+                    results.Add(new ValidationResult("Threshold values (in seconds) cannot be negative."));
+                    return;
+                }
             }
         }
 

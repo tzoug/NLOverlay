@@ -2,6 +2,7 @@
 using NetLimiter.Service;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -19,8 +20,6 @@ namespace UI
         public ClientViewModel ClientViewModel { get; set; }
         private readonly ObservableCollection<RuleViewModel> _ruleViewModels;
         private readonly SettingsData _settings;
-
-        //private ViewModels.PropertyGridRuleModel _propertyGridRule;
 
         public MainWindow()
         {
@@ -64,7 +63,7 @@ namespace UI
                     var ruleFor = filters.FirstOrDefault(f => f.Id == rule.FilterId)?.Name;
                     _ruleViewModels.Add(new RuleViewModel
                     {
-                        ShowOnOverlay = _settings.EnabledRuleIds.Contains(rule.Id),
+                        ShowOnOverlay = _settings.RulesOnOverlay.Contains(rule.Id),
                         RuleFor = ruleFor,
                         Rule = rule
                     });
@@ -72,9 +71,8 @@ namespace UI
             }
         }
 
-        private void UpdateRuleViewModels(IEnumerable<Filter> filters, IEnumerable<Rule> rules)
+        private void UpdateRuleViewModels(IEnumerable<Filter> filters, IEnumerable<NetLimiter.Service.Rule> rules)
         {
-            // Update the ObservableCollection based on the changes from the API
             var updatedRuleViewModels = new ObservableCollection<RuleViewModel>();
 
             foreach (var rule in rules)
@@ -88,23 +86,19 @@ namespace UI
                 });
             }
 
-            // Update the existing collection to reflect changes
             foreach (var updatedRuleViewModel in updatedRuleViewModels)
             {
                 var existingViewModel = _ruleViewModels.FirstOrDefault(vm => vm.Rule.Id == updatedRuleViewModel.Rule.Id);
                 if (existingViewModel != null)
                 {
-                    // Update existing item
                     existingViewModel.RuleFor = updatedRuleViewModel.RuleFor;
                 }
                 else
                 {
-                    // Add new item
                     _ruleViewModels.Add(updatedRuleViewModel);
                 }
             }
 
-            // Remove items that are no longer present in the updated collection
             var itemsToRemove = _ruleViewModels.Where(vm => !updatedRuleViewModels.Any(u => u.Rule.Id == vm.Rule.Id)).ToList();
             foreach (var itemToRemove in itemsToRemove)
             {
@@ -161,17 +155,16 @@ namespace UI
         {
             foreach (var ruleViewModel in _ruleViewModels)
             {
-                ruleViewModel.ShowOnOverlay = _settings.EnabledRuleIds.Contains(ruleViewModel.Id);
+                ruleViewModel.ShowOnOverlay = _settings.RulesOnOverlay.Contains(ruleViewModel.Id);
+                ruleViewModel.IsThresholdEnabled = _settings.Thresholds.ContainsKey(ruleViewModel.Id);
+                ruleViewModel.ThresholdSeconds = _settings.Thresholds.TryGetValue(ruleViewModel.Id, out int value) ? value : 0;
             }
-            //opacityInput.Text = _settings.OverlayOpacity;
-            //pollingRateInput.Text = _settings.ApiPollingRate;
         }
 
         private void Save(object sender, RoutedEventArgs e)
         {
-            _settings.EnabledRuleIds = GetEnabledRules();
-            //_settings.OverlayOpacity = opacityInput.Text;
-            //_settings.ApiPollingRate = pollingRateInput.Text;
+            _settings.RulesOnOverlay = GetEnabledRules();
+            _settings.Thresholds = _ruleViewModels.Where(r => r.IsThresholdEnabled).ToDictionary(r => r.Id,r => r.ThresholdSeconds);
 
             var validationResult = _settings.Validate();
 
