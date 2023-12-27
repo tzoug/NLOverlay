@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 
 namespace Common
@@ -27,12 +28,16 @@ namespace Common
         public string ApiPollingRate { get; set; }
 
         [Browsable(false)]
-        public Dictionary<string, int> Thresholds { get; set; }
+        public Dictionary<string, int> FlashThresholds { get; set; }
+        
+        [Browsable(false)]
+        public Dictionary<string, int> DisableThresholds { get; set; }
 
         public SettingsData() {
             RulesOnOverlay = new List<string>();
             ApiPollingRate = DefaultApiPollingRate.ToString();
-            Thresholds = new Dictionary<string, int>();
+            FlashThresholds = new Dictionary<string, int>();
+            DisableThresholds = new Dictionary<string, int>();
         }
 
         public void Save()
@@ -59,7 +64,8 @@ namespace Common
                         // TODO Check for matching rules and no random values
                         RulesOnOverlay = data.RulesOnOverlay; 
                         ApiPollingRate = data.ApiPollingRate;
-                        Thresholds = data.Thresholds;
+                        FlashThresholds = data.FlashThresholds;
+                        DisableThresholds = data.DisableThresholds;
                     }
                 }
             }
@@ -72,19 +78,14 @@ namespace Common
         public ValidationResult Validate()
         {
             var validationResults = new List<ValidationResult>();
-
-            ValidateEnabledRules(validationResults);
+            
             ValidateApiPollingRate(validationResults);
             ValidateThresholds(validationResults);
 
             return new ValidationResult(validationResults);
         }
 
-        private void ValidateEnabledRules(List<ValidationResult> results)
-        {
-        }
-
-        private void ValidateApiPollingRate(List<ValidationResult> results)
+        private void ValidateApiPollingRate(ICollection<ValidationResult> results)
         {
             if (!int.TryParse(ApiPollingRate, out var number) || number < MinApiPollingRate || number > MaxApiPollingRate)
             {
@@ -92,20 +93,20 @@ namespace Common
             }
         }
 
-        private void ValidateThresholds(List<ValidationResult> results)
+        private void ValidateThresholds(ICollection<ValidationResult> results)
         {
+            var allThresholdValues = FlashThresholds.Values.ToList();
+            allThresholdValues.AddRange(DisableThresholds.Values);
+            
             // Ensure no values that are negative
-            foreach (var values in Thresholds.Values) 
+            if (allThresholdValues.Any(values => values < 0))
             {
-                if (values < 0)
-                {
-                    results.Add(new ValidationResult("Threshold values (in seconds) cannot be negative."));
-                    return;
-                }
+                results.Add(new ValidationResult("Threshold values (in seconds) cannot be negative."));
+                return; // Only add it to the results once.
             }
         }
 
-        private string GetFilePath()
+        public string GetFilePath()
         {
             var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             var saveFolder = Path.Combine(documentsPath, "NLOverlay");
