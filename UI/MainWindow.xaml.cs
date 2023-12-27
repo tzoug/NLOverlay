@@ -1,14 +1,15 @@
-﻿using Common;
+﻿using System;
+using Common;
 using NetLimiter.Service;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
+using UI.Classes;
 using UI.ViewModels;
-using MessageBox = HandyControl.Controls.MessageBox;
 using Window = System.Windows.Window;
 
 namespace UI
@@ -20,11 +21,13 @@ namespace UI
         public ClientViewModel ClientViewModel { get; set; }
         private readonly ObservableCollection<RuleViewModel> _ruleViewModels;
         private readonly SettingsData _settings;
+        private readonly Helper _helper;
 
         public MainWindow()
         {
             InitializeComponent();
             _settings = new SettingsData();
+            _helper = new Helper();
 
             ClientViewModel = new ClientViewModel();
             _ruleViewModels = new ObservableCollection<RuleViewModel>();
@@ -38,77 +41,22 @@ namespace UI
             Load();
         }
 
-        #region Client and Rules
-
         private void UpdateRules()
         {
             using (var client = new NLClient())
             {
                 client.Connect();
 
-                UpdateClientViewModel(client.State);
-
                 var filters = client.Filters;
                 var rules = client.Rules;
-
-                if (!filters.IsNullOrEmpty() && !rules.IsNullOrEmpty())
-                {
-                    UpdateRuleViewModels(filters, rules);
-                }
 
                 _ruleViewModels.Clear();
 
                 foreach (var rule in rules)
                 {
-                    var ruleFor = filters.FirstOrDefault(f => f.Id == rule.FilterId)?.Name;
-                    _ruleViewModels.Add(new RuleViewModel
-                    {
-                        ShowOnOverlay = _settings.RulesOnOverlay.Contains(rule.Id),
-                        RuleFor = ruleFor,
-                        Rule = rule
-                    });
+                    _ruleViewModels.Add(_helper.CreateRuleModel(rule, filters, _settings));
                 }
             }
-        }
-
-        private void UpdateRuleViewModels(IEnumerable<Filter> filters, IEnumerable<NetLimiter.Service.Rule> rules)
-        {
-            var updatedRuleViewModels = new ObservableCollection<RuleViewModel>();
-
-            foreach (var rule in rules)
-            {
-                var ruleFor = filters.FirstOrDefault(f => f.Id == rule.FilterId)?.Name;
-
-                updatedRuleViewModels.Add(new RuleViewModel
-                {
-                    RuleFor = ruleFor,
-                    Rule = rule
-                });
-            }
-
-            foreach (var updatedRuleViewModel in updatedRuleViewModels)
-            {
-                var existingViewModel = _ruleViewModels.FirstOrDefault(vm => vm.Rule.Id == updatedRuleViewModel.Rule.Id);
-                if (existingViewModel != null)
-                {
-                    existingViewModel.RuleFor = updatedRuleViewModel.RuleFor;
-                }
-                else
-                {
-                    _ruleViewModels.Add(updatedRuleViewModel);
-                }
-            }
-
-            var itemsToRemove = _ruleViewModels.Where(vm => !updatedRuleViewModels.Any(u => u.Rule.Id == vm.Rule.Id)).ToList();
-            foreach (var itemToRemove in itemsToRemove)
-            {
-                _ruleViewModels.Remove(itemToRemove);
-            }
-        }
-
-        private void UpdateClientViewModel(NLServiceState state)
-        {
-            ClientViewModel.ServiceState = state;
         }
 
         private List<string> GetEnabledRules()
@@ -118,11 +66,9 @@ namespace UI
                 .Select(r => r.Id)
                 .ToList();
         }
-
-        #endregion
-
+        
         #region Events
-
+        
         private void RulesListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (RulesListView.SelectedItem is RuleViewModel selectedRule)
@@ -136,8 +82,10 @@ namespace UI
         {
             if (_overlayWindow == null || !_overlayWindow.IsVisible)
             {
-                var overlayWindow = new OverlayWindow();
-                overlayWindow.Owner = this;
+                var overlayWindow = new OverlayWindow
+                {
+                    Owner = this
+                };
                 overlayWindow.Show();
             }
             else
@@ -155,16 +103,19 @@ namespace UI
         {
             foreach (var ruleViewModel in _ruleViewModels)
             {
-                ruleViewModel.ShowOnOverlay = _settings.RulesOnOverlay.Contains(ruleViewModel.Id);
-                ruleViewModel.IsThresholdEnabled = _settings.Thresholds.ContainsKey(ruleViewModel.Id);
-                ruleViewModel.ThresholdSeconds = _settings.Thresholds.TryGetValue(ruleViewModel.Id, out int value) ? value : 0;
+                _helper.UpdateRuleModel(ruleViewModel, _settings);
             }
         }
 
         private void Save(object sender, RoutedEventArgs e)
         {
             _settings.RulesOnOverlay = GetEnabledRules();
-            _settings.Thresholds = _ruleViewModels.Where(r => r.IsThresholdEnabled).ToDictionary(r => r.Id,r => r.ThresholdSeconds);
+            _settings.FlashThresholds = _ruleViewModels
+                .Where(r => r.FlashThresholdEnabled)
+                .ToDictionary(r => r.Id, r => r.FlashThreshold);
+            _settings.DisableThresholds = _ruleViewModels
+                .Where(r => r.DisableThresholdEnabled)
+                .ToDictionary(r => r.Id, r => r.DisableThreshold);
 
             var validationResult = _settings.Validate();
 
@@ -180,6 +131,20 @@ namespace UI
             }
         }
 
+        private void OpenConfigFile_Click(object sender, RoutedEventArgs e)
+        {
+            var path = _settings.GetFilePath();
+            
+            try
+            {
+                Process.Start(path);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error opening file: {ex.Message}", "Error");
+            }            
+        }
+
         private void FileExit_Click(object sender, RoutedEventArgs e)
         {
             Close();
@@ -187,8 +152,10 @@ namespace UI
 
         private void AdvancedSettings_Click(object sender, RoutedEventArgs e)
         {
-            var advancedSettingsWindow = new AdvancedSetings();
-            advancedSettingsWindow.Owner = this;
+            var advancedSettingsWindow = new AdvancedSetings
+            {
+                Owner = this
+            };
             advancedSettingsWindow.Show();
         }
 

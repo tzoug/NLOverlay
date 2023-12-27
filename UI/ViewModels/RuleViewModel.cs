@@ -1,7 +1,7 @@
-﻿using System;
+﻿using NetLimiter.Service;
+using System;
 using System.ComponentModel;
-using NetLimiter.Service;
-using UI.Classes;
+using NLInfoTools;
 
 namespace UI.ViewModels
 {
@@ -10,8 +10,12 @@ namespace UI.ViewModels
         private bool _showOnOverlay;
         private string _ruleFor;
         private Rule _rule;
-        private bool _isThresholdEnabled;
-        private int _thresholdSeconds;
+
+        // Thresholds - to refactor with List<Threshold> -> and output to property grid
+        private bool _flashThresholdEnabled;
+        private int _flashThreshold;
+        private bool _disableThresholdEnabled;
+        private int _disableThreshold;
 
         [Browsable(false)]
         public Rule Rule
@@ -27,7 +31,7 @@ namespace UI.ViewModels
             }
         }
 
-        [Category("General")]
+        [Category("Readonly")]
         [ReadOnly(true)]
         [DisplayName("Name")]
         public string RuleFor
@@ -43,18 +47,17 @@ namespace UI.ViewModels
             }
         }
 
-        [Category("General")]
+        [Category("Readonly")]
         [DisplayName("ID")]
         [ReadOnly(true)]
         public string Id => _rule.Id;
 
-        [Category("General")]
+        [Category("Readonly")]
         [ReadOnly(true)]
         [DisplayName("State")]
         public RuleState State => _rule.State;
 
         [Category("Options")]
-        [ReadOnly(false)]
         [DisplayName("Show On Overlay")]
         public bool ShowOnOverlay
         {
@@ -69,44 +72,80 @@ namespace UI.ViewModels
             }
         }
 
-        [Browsable(true)]
-        [Category("Options")]
-        [DisplayName("Threshold Enabled")]
-        public bool IsThresholdEnabled 
+        [Category("Rule Flash Threshold")]
+        [DisplayName("State")]
+        public bool FlashThresholdEnabled
         {
-            get => _isThresholdEnabled;
+            get => _flashThresholdEnabled;
             set
             {
-                if (_isThresholdEnabled != value)
+                if (_flashThresholdEnabled != value)
                 {
-                    _isThresholdEnabled = value;
-                    OnPropertyChanged(nameof(IsThresholdEnabled));
+                    _flashThresholdEnabled = value;
+                    OnPropertyChanged(nameof(FlashThresholdEnabled));
                 }
             }
         }
 
-        [Category("Options")]
-        [Browsable(true)]
-        [DisplayName("Threshold (s)")]
-        public int ThresholdSeconds
+        [Category("Rule Flash Threshold")]
+        [DisplayName("Value (s)")]
+        public int FlashThreshold
         {
-            get => _thresholdSeconds;
+            get => _flashThreshold;
             set
             {
-                if (_thresholdSeconds != value)
+                if (_flashThreshold != value)
                 {
-                    _thresholdSeconds = value;
-                    OnPropertyChanged(nameof(ThresholdSeconds));
+                    _flashThreshold = value;
+                    OnPropertyChanged(nameof(FlashThreshold));
+                }
+            }
+        }
+
+        [Category("Rule Disable Threshold")]
+        [DisplayName("State")]
+        public bool DisableThresholdEnabled
+        {
+            get => _disableThresholdEnabled;
+            set
+            {
+                if (_disableThresholdEnabled != value)
+                {
+                    _disableThresholdEnabled = value;
+                    OnPropertyChanged(nameof(DisableThresholdEnabled));
+                }
+            }
+        }
+
+        [Category("Rule Disable Threshold")]
+        [DisplayName("Value (s)")]
+        public int DisableThreshold
+        {
+            get => _disableThreshold;
+            set
+            {
+                if (_disableThreshold != value)
+                {
+                    _disableThreshold = value;
+                    OnPropertyChanged(nameof(DisableThreshold));
                 }
             }
         }
 
         [Browsable(false)]
-        public bool IsPassedThreshold => IsThresholdEnabled && UpdateInterval.TotalSeconds >= ThresholdSeconds;
-
+        public bool IsFlashThresholdReached => FlashThresholdEnabled && SecondsSinceLastUpdate() >= FlashThreshold;
 
         [Browsable(false)]
-        public TimeSpan UpdateInterval => DateTime.Now - _rule.UpdatedTime.ToLocalTime();
+        public bool IsDisableThresholdReached => DisableThresholdEnabled && SecondsSinceLastUpdate() >= DisableThreshold;
+
+        [Browsable(false)]
+        private TimeSpan UpdateInterval => DateTime.Now - _rule.UpdatedTime.ToLocalTime();
+
+        [Browsable(false)]
+        private int SecondsSinceLastUpdate()
+        {
+            return (int)UpdateInterval.TotalSeconds;
+        }
 
         [Browsable(false)]
         public string UpdateIntervalString
@@ -116,8 +155,8 @@ namespace UI.ViewModels
                 var elapsedTime = DateTime.Now - _rule.UpdatedTime.ToLocalTime();
 
                 return elapsedTime.TotalMinutes > 1
-                    ? $"{elapsedTime.Seconds}s.{elapsedTime.Milliseconds}ms"
-                    : $"{elapsedTime.Minutes}m.{elapsedTime.Seconds}s.{elapsedTime.Milliseconds}ms";
+                    ? $"{elapsedTime.Minutes}m.{elapsedTime.Seconds}s.{elapsedTime.Milliseconds}ms"
+                    : $"{elapsedTime.Seconds}s.{elapsedTime.Milliseconds}ms";
             }
         }
 

@@ -26,6 +26,7 @@
             <Menu Grid.ColumnSpan="2">
                 <MenuItem Header="_File">
                     <MenuItem Click="Save" Header="_Save" />
+                    <MenuItem Click="OpenConfigFile_Click" Header="_Open Config File" />
                     <Separator />
                     <MenuItem Click="FileExit_Click" Header="_Exit" />
                 </MenuItem>
@@ -57,8 +58,8 @@
                 Grid.ColumnSpan="2"
                 Width="285"
                 Height="468"
-                Margin="-9,35,0,0"
-                HorizontalAlignment="Left"
+                Margin="0,35,455,0"
+                HorizontalAlignment="Right"
                 VerticalAlignment="Top"
                 BorderThickness="1"
                 ItemsSource="{Binding ruleViewModels}"
