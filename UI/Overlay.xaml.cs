@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Drawing;
-using System.Linq;
-using System.Threading;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
-using Common;
+﻿using Common;
 using Common.Services;
 using NetLimiter.Service;
+using System;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
 using UI.Classes;
 using UI.ViewModels;
-using Brushes = System.Windows.Media.Brushes;
 
 namespace UI
 {
@@ -25,6 +21,7 @@ namespace UI
         private ObservableCollection<RuleViewModel> _ruleViewModels;
         private IRuleService _ruleService;
         private readonly Helper _helper;
+        private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
 
         public OverlayWindow()
         {
@@ -32,12 +29,11 @@ namespace UI
             _ruleService = new RuleService();
             _helper = new Helper();
 
-            Application.Current.MainWindow.Closed += MainWindow_Closed;
-
             Topmost = true;
             
             SetWindowPosition();
             
+            var settings = new SettingsData();
             _settings = new SettingsData();
             _settings.Load();
 
@@ -45,14 +41,23 @@ namespace UI
             _ruleViewModels = new ObservableCollection<RuleViewModel>();
             rulesGrid.ItemsSource = _ruleViewModels;
 
-            ThreadPool.QueueUserWorkItem(state =>
+            Task.Run(RenderAsync);
+        }
+
+        private async Task RenderAsync()
+        {
+            try
             {
-                while (true)
+                while (!_cancellationTokenSource.Token.IsCancellationRequested)
                 {
-                    UpdateRules();
-                    Thread.Sleep(System.TimeSpan.FromMilliseconds(_settings.ApiPollingRate.ConvertStringToInt()));
+                    await UpdateRulesAsync(_cancellationTokenSource.Token);
+                    await Task.Delay(TimeSpan.FromMilliseconds(_settings.ApiPollingRate.ConvertStringToInt()), _cancellationTokenSource.Token);
                 }
-            });
+            }
+            catch (TaskCanceledException)
+            {
+                // Task was canceled, handle as needed
+            }
         }
 
         private void MainWindow_Closed(object sender, EventArgs e)
@@ -67,34 +72,50 @@ namespace UI
             Top = (workingArea.Height - Height) / 2;
         }
 
+        public void LoadSettings()
+        {
+            _settings.Load();
+            _ruleViewModels.Clear();
+        }
+
         #region ViewModel Stuff
 
-        private void UpdateRules()
+        private async Task UpdateRulesAsync(CancellationToken cancellationToken)
         {
-            using (var client = new NLClient())
+            cancellationToken.ThrowIfCancellationRequested();
+
+            await Task.Run(() =>
             {
-                client.Connect();
-
-                var filters = client.Filters;
-                var rules = client.Rules;
-
-                var activeAndOverlayRules = rules
-                    .Where(r => r.IsActive && _settings.RulesOnOverlay.Contains(r.Id))
-                    .ToList();
-
-                Application.Current.Dispatcher.Invoke(() =>
+                using (var client = new NLClient())
                 {
-                    _ruleViewModels.Clear();
-                    
-                    foreach (var rule in activeAndOverlayRules)
-                    {
-                        var model = _helper.CreateRuleModel(rule, filters, _settings);
-                        _ruleViewModels.Add(model);
+                    client.Connect();
 
-                        DisableRuleIfThresholdReached(model);
+                    var filters = client.Filters;
+                    var rules = client.Rules;
+
+                    var activeAndOverlayRules = rules
+                        .Where(r => r.IsActive && _settings.RulesOnOverlay.Contains(r.Id))
+                        .ToList();
+
+                    if (Application.Current?.Dispatcher != null)
+                    {
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            cancellationToken.ThrowIfCancellationRequested();
+
+                            _ruleViewModels.Clear();
+
+                            foreach (var rule in activeAndOverlayRules)
+                            {
+                                var model = _helper.CreateRuleModel(rule, filters, _settings);
+                                _ruleViewModels.Add(model);
+
+                                DisableRuleIfThresholdReached(model);
+                            }
+                        });
                     }
-                });
-            }
+                }
+            }, cancellationToken);
         }
 
         private void DisableRuleIfThresholdReached(RuleViewModel model)

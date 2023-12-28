@@ -6,44 +6,31 @@
     xmlns:local="clr-namespace:UI"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="Overlay"
-    Width="295"
+    Width="340"
     Height="450"
     AllowsTransparency="True"
     Background="#00000080"
     WindowStyle="None"
     mc:Ignorable="d">
 
-    <Window.Resources>
-        <Style x:Key="WhiteText" TargetType="Control">
-            <Setter Property="Foreground" Value="White" />
-            <Setter Property="Background" Value="Black" />
-        </Style>
-        <ColorAnimation
-            x:Key="FlashAnimation"
-            AutoReverse="True"
-            RepeatBehavior="3x"
-            From="Red"
-            To="Transparent"
-            Duration="0:0:0.5" />
-    </Window.Resources>
-
     <Grid>
         <DataGrid
             x:Name="rulesGrid"
             Grid.RowSpan="2"
-            Width="295"
+            Width="340"
             Margin="0,0,0,10"
             HorizontalAlignment="Center"
             AutoGenerateColumns="False"
-            Background="#00000080"
+            Background="Transparent"
             BorderBrush="Transparent"
             BorderThickness="1"
             CanUserAddRows="False"
-            Foreground="White"
+            FontSize="28"
             HeadersVisibility="None"
             IsReadOnly="True"
             ItemsSource="{Binding Path=ruleViewModel, IsAsync=True, UpdateSourceTrigger=PropertyChanged}"
-            Opacity="0.5">
+            Opacity="0.5"
+            RowBackground="Transparent">
             <DataGrid.ColumnHeaderStyle>
                 <Style TargetType="{x:Type DataGridColumnHeader}">
                     <Setter Property="Background" Value="White" />
@@ -51,31 +38,39 @@
                 </Style>
             </DataGrid.ColumnHeaderStyle>
             <DataGrid.Columns>
-                <DataGridTextColumn
-                    Binding="{Binding RuleFor}"
-                    FontSize="24"
-                    FontWeight="Bold"
-                    Foreground="White"
-                    Header="Rule" />
-                <DataGridTextColumn
-                    Binding="{Binding UpdateIntervalString}"
-                    FontSize="24"
-                    FontWeight="Bold"
-                    Foreground="White"
-                    Header="Interval" />
+                <DataGridTextColumn Binding="{Binding RuleFor}" Header="Rule">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="FontWeight" Value="UltraBold" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsHighlightThresholdReached}" Value="True">
+                                    <Setter Property="Foreground" Value="Red" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsHighlightThresholdReached}" Value="False">
+                                    <Setter Property="Foreground" Value="White" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Binding="{Binding UpdateIntervalString}" Header="Interval">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="FontWeight" Value="Bold" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsHighlightThresholdReached}" Value="True">
+                                    <Setter Property="Foreground" Value="Red" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsHighlightThresholdReached}" Value="False">
+                                    <Setter Property="Foreground" Value="White" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
             </DataGrid.Columns>
-            <DataGrid.RowStyle>
-                <Style TargetType="DataGridRow">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsFlashThresholdReached}" Value="True">
-                            <Setter Property="Background" Value="Red" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding IsFlashThresholdReached}" Value="False">
-                            <Setter Property="Background" Value="Black" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </DataGrid.RowStyle>
         </DataGrid>
     </Grid>
 </Window>

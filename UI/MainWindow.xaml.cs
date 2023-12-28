@@ -28,6 +28,7 @@ namespace UI
             InitializeComponent();
             _settings = new SettingsData();
             _helper = new Helper();
+            _overlayWindow = new OverlayWindow();
 
             ClientViewModel = new ClientViewModel();
             _ruleViewModels = new ObservableCollection<RuleViewModel>();
@@ -82,11 +83,11 @@ namespace UI
         {
             if (_overlayWindow == null || !_overlayWindow.IsVisible)
             {
-                var overlayWindow = new OverlayWindow
+                _overlayWindow = new OverlayWindow
                 {
                     Owner = this
                 };
-                overlayWindow.Show();
+                _overlayWindow.Show();
             }
             else
             {
@@ -110,9 +111,9 @@ namespace UI
         private void Save(object sender, RoutedEventArgs e)
         {
             _settings.RulesOnOverlay = GetEnabledRules();
-            _settings.FlashThresholds = _ruleViewModels
-                .Where(r => r.FlashThresholdEnabled)
-                .ToDictionary(r => r.Id, r => r.FlashThreshold);
+            _settings.HighlightThresholds = _ruleViewModels
+                .Where(r => r.HighlightThresholdEnabled)
+                .ToDictionary(r => r.Id, r => r.HighlightThreshold);
             _settings.DisableThresholds = _ruleViewModels
                 .Where(r => r.DisableThresholdEnabled)
                 .ToDictionary(r => r.Id, r => r.DisableThreshold);
@@ -123,6 +124,9 @@ namespace UI
             {
                 _settings.Save();
                 MessageBox.Show("Saved", "Save");
+                
+                // Refresh the overlay settings
+                _overlayWindow?.LoadSettings();
             }
             else
             {
@@ -142,7 +146,7 @@ namespace UI
             catch (Exception ex)
             {
                 MessageBox.Show($"Error opening file: {ex.Message}", "Error");
-            }            
+            }
         }
 
         private void FileExit_Click(object sender, RoutedEventArgs e)
@@ -157,6 +161,11 @@ namespace UI
                 Owner = this
             };
             advancedSettingsWindow.Show();
+        }
+
+        private void UpdateOverlay_Click(object sender, RoutedEventArgs e)
+        {
+            _overlayWindow.LoadSettings();
         }
 
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)

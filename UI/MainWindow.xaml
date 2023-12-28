@@ -6,7 +6,6 @@
     xmlns:hc="https://handyorg.github.io/handycontrol"
     xmlns:local="clr-namespace:UI"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     Title="NLOverlay"
     Width="800"
     Height="560"
@@ -34,7 +33,7 @@
                 <MenuItem Header="_Tools">
                     <MenuItem Click="AdvancedSettings_Click" Header="Advanced Settings" />
                     <MenuItem Click="Refresh_Rules" Header="Refresh Rules List" />
-                    <MenuItem Header="Update Overlay" />
+                    <MenuItem Click="UpdateOverlay_Click" Header="Update Overlay" />
                 </MenuItem>
 
                 <MenuItem Header="_About">
@@ -70,7 +69,6 @@
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Cursor="Arrow" Orientation="Horizontal">
-                                        <ui:ToggleSwitch />
                                         <TextBlock Text="{Binding RuleFor}" />
                                     </StackPanel>
                                 </DataTemplate>
@@ -101,7 +99,6 @@
                 Click="Launch_Overlay"
                 Content="Launch Overlay"
                 Style="{StaticResource ButtonPrimary}" />
-
 
             <hc:PropertyGrid
                 x:Name="PropertyGrid"

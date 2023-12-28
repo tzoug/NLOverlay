@@ -17,8 +17,8 @@ namespace UI.Classes
                 Rule = rule,
                 RuleFor = ruleFor,
                 ShowOnOverlay = settings.RulesOnOverlay.Contains(rule.Id),
-                FlashThresholdEnabled = settings.FlashThresholds.ContainsKey(rule.Id),
-                FlashThreshold = settings.FlashThresholds.TryGetValue(rule.Id, out var flashValue) ? flashValue : 0,
+                HighlightThresholdEnabled = settings.HighlightThresholds.ContainsKey(rule.Id),
+                HighlightThreshold = settings.HighlightThresholds.TryGetValue(rule.Id, out var highlightValue) ? highlightValue : 0,
                 DisableThresholdEnabled = settings.DisableThresholds.ContainsKey(rule.Id),
                 DisableThreshold = settings.DisableThresholds.TryGetValue(rule.Id, out var disableValue) ? disableValue : 0
             };
@@ -27,8 +27,8 @@ namespace UI.Classes
         public void UpdateRuleModel(RuleViewModel model, SettingsData settings)
         {
             model.ShowOnOverlay = settings.RulesOnOverlay.Contains(model.Id);
-            model.FlashThresholdEnabled = settings.FlashThresholds.ContainsKey(model.Id);
-            model.FlashThreshold = settings.FlashThresholds.TryGetValue(model.Id, out var flashValue) ? flashValue : 0;
+            model.HighlightThresholdEnabled = settings.HighlightThresholds.ContainsKey(model.Id);
+            model.HighlightThreshold = settings.HighlightThresholds.TryGetValue(model.Id, out var highlightValue) ? highlightValue : 0;
             model.DisableThresholdEnabled = settings.DisableThresholds.ContainsKey(model.Id);
             model.DisableThreshold =
                 settings.DisableThresholds.TryGetValue(model.Id, out var disableValue) ? disableValue : 0;
