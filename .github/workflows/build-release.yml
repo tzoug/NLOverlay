@@ -1,0 +1,36 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '4.6.2'
+
+    - name: Build
+      run: dotnet build -c Release
+
+    - name: Rename executable
+      run: mv ./UI/bin/Release/UI.exe ./UI/bin/Release/NLOverlay.exe
+
+    - name: Create release
+      id: create_release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          ./UI/bin/Release/NLOverlay.exe
+        token: ${{ secrets.GITHUB_TOKEN }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
