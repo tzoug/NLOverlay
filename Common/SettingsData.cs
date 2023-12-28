@@ -28,7 +28,7 @@ namespace Common
         public string ApiPollingRate { get; set; }
 
         [Browsable(false)]
-        public Dictionary<string, int> FlashThresholds { get; set; }
+        public Dictionary<string, int> HighlightThresholds { get; set; }
         
         [Browsable(false)]
         public Dictionary<string, int> DisableThresholds { get; set; }
@@ -36,7 +36,7 @@ namespace Common
         public SettingsData() {
             RulesOnOverlay = new List<string>();
             ApiPollingRate = DefaultApiPollingRate.ToString();
-            FlashThresholds = new Dictionary<string, int>();
+            HighlightThresholds = new Dictionary<string, int>();
             DisableThresholds = new Dictionary<string, int>();
         }
 
@@ -61,10 +61,9 @@ namespace Common
 
                     if (validationResult.IsValid)
                     {
-                        // TODO Check for matching rules and no random values
                         RulesOnOverlay = data.RulesOnOverlay; 
                         ApiPollingRate = data.ApiPollingRate;
-                        FlashThresholds = data.FlashThresholds;
+                        HighlightThresholds = data.HighlightThresholds;
                         DisableThresholds = data.DisableThresholds;
                     }
                 }
@@ -95,7 +94,7 @@ namespace Common
 
         private void ValidateThresholds(ICollection<ValidationResult> results)
         {
-            var allThresholdValues = FlashThresholds.Values.ToList();
+            var allThresholdValues = HighlightThresholds.Values.ToList();
             allThresholdValues.AddRange(DisableThresholds.Values);
             
             // Ensure no values that are negative

@@ -12,8 +12,8 @@ namespace UI.ViewModels
         private Rule _rule;
 
         // Thresholds - to refactor with List<Threshold> -> and output to property grid
-        private bool _flashThresholdEnabled;
-        private int _flashThreshold;
+        private bool _highlightThresholdEnabled;
+        private int _highlightThreshold;
         private bool _disableThresholdEnabled;
         private int _disableThreshold;
 
@@ -72,32 +72,32 @@ namespace UI.ViewModels
             }
         }
 
-        [Category("Rule Flash Threshold")]
+        [Category("Rule Highlight Threshold")]
         [DisplayName("State")]
-        public bool FlashThresholdEnabled
+        public bool HighlightThresholdEnabled
         {
-            get => _flashThresholdEnabled;
+            get => _highlightThresholdEnabled;
             set
             {
-                if (_flashThresholdEnabled != value)
+                if (_highlightThresholdEnabled != value)
                 {
-                    _flashThresholdEnabled = value;
-                    OnPropertyChanged(nameof(FlashThresholdEnabled));
+                    _highlightThresholdEnabled = value;
+                    OnPropertyChanged(nameof(HighlightThresholdEnabled));
                 }
             }
         }
 
-        [Category("Rule Flash Threshold")]
+        [Category("Rule Highlight Threshold")]
         [DisplayName("Value (s)")]
-        public int FlashThreshold
+        public int HighlightThreshold
         {
-            get => _flashThreshold;
+            get => _highlightThreshold;
             set
             {
-                if (_flashThreshold != value)
+                if (_highlightThreshold != value)
                 {
-                    _flashThreshold = value;
-                    OnPropertyChanged(nameof(FlashThreshold));
+                    _highlightThreshold = value;
+                    OnPropertyChanged(nameof(HighlightThreshold));
                 }
             }
         }
@@ -133,7 +133,7 @@ namespace UI.ViewModels
         }
 
         [Browsable(false)]
-        public bool IsFlashThresholdReached => FlashThresholdEnabled && SecondsSinceLastUpdate() >= FlashThreshold;
+        public bool IsHighlightThresholdReached => HighlightThresholdEnabled && SecondsSinceLastUpdate() >= HighlightThreshold;
 
         [Browsable(false)]
         public bool IsDisableThresholdReached => DisableThresholdEnabled && SecondsSinceLastUpdate() >= DisableThreshold;
