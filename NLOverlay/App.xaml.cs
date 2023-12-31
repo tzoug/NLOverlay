@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace UI
+namespace NLOverlay
 {
     public partial class App : Application
     {

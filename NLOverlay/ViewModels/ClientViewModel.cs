@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using NetLimiter.Service;
 
-namespace UI.ViewModels
+namespace NLOverlay.ViewModels
 {
     public class ClientViewModel : INotifyPropertyChanged
     {

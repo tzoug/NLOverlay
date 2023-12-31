@@ -8,11 +8,11 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
-using UI.Classes;
-using UI.ViewModels;
+using NLOverlay.Classes;
+using NLOverlay.ViewModels;
 using Window = System.Windows.Window;
 
-namespace UI
+namespace NLOverlay
 {
     public partial class MainWindow : Window
     {

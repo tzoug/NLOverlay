@@ -1,5 +1,5 @@
 ﻿<Window
-    x:Class="UI.AdvancedSetings"
+    x:Class="NLOverlay.AdvancedSetings"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -14,13 +14,17 @@
         <hc:PropertyGrid
             x:Name="SettingsPropertyGrid"
             Width="499"
+            Height="480"
             Margin="0,24,0,0"
-            HorizontalAlignment="Center" Height="480" VerticalAlignment="Top" />
+            HorizontalAlignment="Center"
+            VerticalAlignment="Top" />
         <Button
+            Height="30"
             Margin="221,529,221,0"
+            HorizontalAlignment="Stretch"
             VerticalAlignment="Top"
             Click="Save"
             Content="Save"
-            Style="{StaticResource ButtonPrimary}" HorizontalAlignment="Stretch" Height="30" />
+            Style="{StaticResource ButtonPrimary}" />
     </Grid>
 </Window>

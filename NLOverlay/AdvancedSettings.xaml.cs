@@ -2,7 +2,7 @@
 using System;
 using System.Windows;
 
-namespace UI
+namespace NLOverlay
 {
     /// <summary>
     /// Interaction logic for AdvancedSetings.xaml

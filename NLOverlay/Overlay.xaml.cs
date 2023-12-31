@@ -7,11 +7,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
-using UI.Classes;
-using UI.ViewModels;
+using NLOverlay.Classes;
+using NLOverlay.ViewModels;
 
-namespace UI
+namespace NLOverlay
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

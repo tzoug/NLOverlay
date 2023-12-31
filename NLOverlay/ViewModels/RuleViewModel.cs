@@ -3,7 +3,7 @@ using System;
 using System.ComponentModel;
 using NLInfoTools;
 
-namespace UI.ViewModels
+namespace NLOverlay.ViewModels
 {
     public class RuleViewModel : INotifyPropertyChanged
     {

@@ -1,4 +1,4 @@
-﻿namespace UI.Enums
+﻿namespace NLOverlay.Enums
 {
     public enum ThresholdType
     {

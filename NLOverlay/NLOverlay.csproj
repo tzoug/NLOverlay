@@ -7,8 +7,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{F386AC95-D15C-49DF-A672-AE3C2B0F36DF}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>UI</RootNamespace>
-    <AssemblyName>UI</AssemblyName>
+    <RootNamespace>NLOverlay</RootNamespace>
+    <AssemblyName>NLOverlay</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -42,7 +42,7 @@
     <ApplicationIcon>Assets\9396470.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>UI.App</StartupObject>
+    <StartupObject>NLOverlay.App</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CoreLibNet, Version=5.0.8614.32711, Culture=neutral, processorArchitecture=MSIL">
@@ -262,9 +262,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Assets\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj">
       <Project>{acbe9732-f1b4-44f7-b586-8021cba320a1}</Project>
@@ -284,6 +282,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include=".nuget\mouse-keyboard-hook-logo.png" />
+    <Resource Include="Assets\9396470.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Fody.6.8.0\build\Fody.targets" Condition="Exists('..\packages\Fody.6.8.0\build\Fody.targets')" />

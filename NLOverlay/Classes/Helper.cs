@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Common;
 using NetLimiter.Service;
-using UI.ViewModels;
+using NLOverlay.ViewModels;
 
-namespace UI.Classes
+namespace NLOverlay.Classes
 {
     public class Helper
     {

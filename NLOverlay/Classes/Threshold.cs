@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
-using UI.Enums;
+using NLOverlay.Enums;
 
-namespace UI.Classes
+namespace NLOverlay.Classes
 {
     public class Threshold : INotifyPropertyChanged
     {
