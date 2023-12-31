@@ -28,13 +28,10 @@ jobs:
     - name: Build solution
       run: msbuild NLOverlay.sln -t:rebuild -property:Configuration=Release
 
-    - name: Create Release
-      id: upload-release-asset    
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Create release
+      id: create_release
+      uses: softprops/action-gh-release@v1
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./NLOverlay/bin/Release/NLOverlay.exe
-        asset_name: NLOverlay.exe
-        asset_content_type: application/octet-stream    
+        files: |
+          ./NLOverlay/bin/Release/NLOverlay.exe
+        token: ${{ secrets.GITHUB_TOKEN }}
