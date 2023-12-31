@@ -6,7 +6,7 @@
     xmlns:local="clr-namespace:UI"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="Overlay"
-    Width="340"
+    Width="350"
     Height="450"
     AllowsTransparency="True"
     Background="#00000080"
@@ -17,7 +17,7 @@
         <DataGrid
             x:Name="rulesGrid"
             Grid.RowSpan="2"
-            Width="340"
+            Width="350"
             Margin="0,0,0,10"
             HorizontalAlignment="Center"
             AutoGenerateColumns="False"
