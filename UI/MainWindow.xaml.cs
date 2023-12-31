@@ -17,8 +17,6 @@ namespace UI
     public partial class MainWindow : Window
     {
         private OverlayWindow _overlayWindow;
-
-        public ClientViewModel ClientViewModel { get; set; }
         private readonly ObservableCollection<RuleViewModel> _ruleViewModels;
         private readonly SettingsData _settings;
         private readonly Helper _helper;
@@ -26,11 +24,12 @@ namespace UI
         public MainWindow()
         {
             InitializeComponent();
+
+            Closed += MainWindow_Closed;
+
             _settings = new SettingsData();
             _helper = new Helper();
             _overlayWindow = new OverlayWindow();
-
-            ClientViewModel = new ClientViewModel();
             _ruleViewModels = new ObservableCollection<RuleViewModel>();
             
             RulesListView.ItemsSource = _ruleViewModels;
@@ -85,13 +84,21 @@ namespace UI
             {
                 _overlayWindow = new OverlayWindow
                 {
-                    Owner = this
+                    Owner = null
                 };
                 _overlayWindow.Show();
             }
             else
             {
                 _overlayWindow.Activate();
+            }
+        }
+
+        private void MainWindow_Closed(object sender, EventArgs e)
+        {
+            if (_overlayWindow != null && _overlayWindow.IsVisible)
+            {
+                _overlayWindow.Close();
             }
         }
 

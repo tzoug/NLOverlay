@@ -61,11 +61,6 @@ namespace UI
             }
         }
 
-        private void MainWindow_Closed(object sender, EventArgs e)
-        {
-            Close();
-        }
-
         private void SetWindowPosition()
         {
             var workingArea = SystemParameters.WorkArea;
