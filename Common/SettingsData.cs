@@ -68,7 +68,7 @@ namespace Common
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Catch error while reading file
             }
