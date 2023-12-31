@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:hc="https://handyorg.github.io/handycontrol"
-    xmlns:local="clr-namespace:UI"
+    xmlns:local="clr-namespace:NLOverlay"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="NLOverlay"
     Width="800"
@@ -14,6 +14,7 @@
     MaxWidth="800"
     MaxHeight="560"
     Margin="0"
+    Closed="MainWindow_Closed"
     mc:Ignorable="d">
 
     <Viewbox>

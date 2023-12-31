@@ -100,6 +100,7 @@ namespace NLOverlay
             {
                 _overlayWindow.Close();
             }
+            Environment.Exit(0);
         }
 
         private void Refresh_Rules(object sender, RoutedEventArgs e)
