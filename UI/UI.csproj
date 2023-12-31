@@ -208,7 +208,6 @@
     </Compile>
     <Compile Include="Classes\Helper.cs" />
     <Compile Include="Classes\Threshold.cs" />
-    <Compile Include="Converters\FontSizeConverter.cs" />
     <Compile Include="Enums\ThresholdType.cs" />
     <Compile Include="Overlay.xaml.cs">
       <DependentUpon>Overlay.xaml</DependentUpon>
