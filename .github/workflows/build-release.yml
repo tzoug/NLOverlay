@@ -18,14 +18,10 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y mono-complete      
 
-    - name: Download and Install .NET Framework 4.6.2 Developer Pack
-      run: |
-        wget -O ndp462-devpack-kb3151934-enu.exe https://download.visualstudio.microsoft.com/download/pr/2d2d3b6f-29d8-4505-ae7e-3d5084b18e89/1a91d38ab37d261460611c058620e5e5/ndp462-devpack-kb3151934-enu.exe
-        chmod +x ndp462-devpack-kb3151934-enu.exe
-        mono ndp462-devpack-kb3151934-enu.exe /quiet /extract:C:\DotNet462
-        sudo mkdir -p /opt/dotnet
-        sudo mv C:/DotNet462 /opt/dotnet/ndp462-devpack
-        sudo ln -s /opt/dotnet/ndp462-devpack /usr/share/dotnet
+    - name: Setup .NET Framework 4.6.2
+      uses: ilammy/msbuild@v1
+      with:
+        target: '4.6.2'
 
     - name: Build
       run: dotnet build -c Release
