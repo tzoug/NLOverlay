@@ -29,6 +29,12 @@ There are **2** ways to run the program:
 - Build/rebuild the solution
     - The `.exe` file should appear in `NLOverlay/bin/Debug` or `NLOverlay/bin/Release`
 
+# Upcoming Features
+
+- Overlay placement chooser
+- Option to customize colors
+- Task bar options
+
 # Ressources
 
 - [Fody](https://github.com/Fody/Fody)
