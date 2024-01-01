@@ -1,7 +1,7 @@
 ﻿using NetLimiter.Service;
 using System.Linq;
 
-namespace Common.Services
+namespace NLOverlay.Services
 {
     public class RuleService : IRuleService
     {

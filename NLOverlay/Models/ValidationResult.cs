@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Common
+namespace NLOverlay
 {
     public class ValidationResult
     {

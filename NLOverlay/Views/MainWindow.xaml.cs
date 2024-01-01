@@ -1,5 +1,4 @@
 ﻿using System;
-using Common;
 using NetLimiter.Service;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -8,17 +7,20 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
-using NLOverlay.Classes;
 using NLOverlay.ViewModels;
 using Window = System.Windows.Window;
+using NLOverlay.Helpers;
+using NLOverlay.Models;
+using HandyControl.Controls;
+using MessageBox = System.Windows.MessageBox;
 
-namespace NLOverlay
+namespace NLOverlay.Views
 {
     public partial class MainWindow : Window
     {
         private OverlayWindow _overlayWindow;
         private readonly ObservableCollection<RuleViewModel> _ruleViewModels;
-        private readonly SettingsData _settings;
+        private readonly Settings _settings;
         private readonly Helper _helper;
 
         public MainWindow()
@@ -27,7 +29,7 @@ namespace NLOverlay
 
             Closed += MainWindow_Closed;
 
-            _settings = new SettingsData();
+            _settings = new Settings();
             _helper = new Helper();
             _overlayWindow = new OverlayWindow();
             _ruleViewModels = new ObservableCollection<RuleViewModel>();

@@ -1,5 +1,5 @@
 ﻿<Window
-    x:Class="NLOverlay.OverlayWindow"
+    x:Class="NLOverlay.Views.OverlayWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -10,6 +10,11 @@
     Height="450"
     AllowsTransparency="True"
     Background="#00000080"
+    FocusManager.IsFocusScope="False"
+    Focusable="False"
+    IsEnabled="False"
+    IsHitTestVisible="False"
+    ShowActivated="False"
     WindowStyle="None"
     mc:Ignorable="d">
 
@@ -25,11 +30,13 @@
             BorderBrush="Transparent"
             BorderThickness="1"
             CanUserAddRows="False"
+            Focusable="False"
             FontSize="28"
             HeadersVisibility="None"
             IsReadOnly="True"
-            ItemsSource="{Binding Path=ruleViewModel, IsAsync=True, UpdateSourceTrigger=PropertyChanged}"
+            ItemsSource="{Binding ruleViewModel, IsAsync=True, UpdateSourceTrigger=PropertyChanged}"
             Opacity="0.5"
+            PreviewMouseDown="RulesGrid_PreviewMouseDown"
             RowBackground="Transparent">
             <DataGrid.ColumnHeaderStyle>
                 <Style TargetType="{x:Type DataGridColumnHeader}">
@@ -59,6 +66,8 @@
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Background" Value="Transparent" />
                             <Setter Property="FontWeight" Value="Bold" />
+                            <Setter Property="Focusable" Value="False" />
+                            <Setter Property="IsHitTestVisible" Value="False" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding IsHighlightThresholdReached}" Value="True">
                                     <Setter Property="Foreground" Value="Red" />

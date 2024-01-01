@@ -1,14 +1,14 @@
+using NetLimiter.Service;
+using NLOverlay.Models;
+using NLOverlay.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
-using Common;
-using NetLimiter.Service;
-using NLOverlay.ViewModels;
 
-namespace NLOverlay.Classes
+namespace NLOverlay.Helpers
 {
     public class Helper
     {
-        public RuleViewModel CreateRuleModel(Rule rule, IEnumerable<Filter> filters, SettingsData settings)
+        public RuleViewModel CreateRuleModel(Rule rule, IEnumerable<Filter> filters, Settings settings)
         {
             var ruleFor = filters.FirstOrDefault(f => f.Id == rule.FilterId)?.Name;
             
@@ -24,7 +24,7 @@ namespace NLOverlay.Classes
             };
         }
         
-        public void UpdateRuleModel(RuleViewModel model, SettingsData settings)
+        public void UpdateRuleModel(RuleViewModel model, Settings settings)
         {
             model.ShowOnOverlay = settings.RulesOnOverlay.Contains(model.Id);
             model.HighlightThresholdEnabled = settings.HighlightThresholds.ContainsKey(model.Id);

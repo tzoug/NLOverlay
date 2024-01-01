@@ -1,20 +1,21 @@
-﻿using Common;
+﻿using NLOverlay.Helpers;
+using NLOverlay.Models;
 using System;
 using System.Windows;
 
-namespace NLOverlay
+namespace NLOverlay.Views
 {
     /// <summary>
     /// Interaction logic for AdvancedSetings.xaml
     /// </summary>
     public partial class AdvancedSetings : Window
     {
-        private SettingsData _settings;
+        private Settings _settings;
         public AdvancedSetings()
         {
             InitializeComponent();
 
-            _settings = new SettingsData();
+            _settings = new Settings();
             _settings.Load();
 
             SettingsPropertyGrid.SelectedObject = _settings;

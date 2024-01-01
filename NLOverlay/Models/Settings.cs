@@ -1,18 +1,19 @@
-﻿using System;
+﻿using NLOverlay.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
 
-namespace NLOverlay
+namespace NLOverlay.Models
 {
     public class Settings
     {
         private const int MinApiPollingRate = 0;
         private const int MaxApiPollingRate = 60000;
-
         private const int DefaultApiPollingRate = 1000;
+        private const OverlayPlacement DefaultOverlayPlacement = OverlayPlacement.LeftCenter;
 
         /// <summary>
         /// List of IDs of enabled rules (for overlay)
@@ -27,7 +28,12 @@ namespace NLOverlay
         [Category("Advanced")]
         public string ApiPollingRate { get; set; }
 
-        //public OverlayPlacement OverlayPlacement { get; set; }
+        /// <summary>
+        /// Placement of overlay window
+        /// </summary>
+        [DisplayName("Overlay Placement")]
+        [Category("Advanced")]
+        public OverlayPlacement OverlayPlacement { get; set; }
 
         [Browsable(false)]
         public Dictionary<string, int> HighlightThresholds { get; set; }
@@ -35,9 +41,10 @@ namespace NLOverlay
         [Browsable(false)]
         public Dictionary<string, int> DisableThresholds { get; set; }
 
-        public SettingsData() {
+        public Settings() {
             RulesOnOverlay = new List<string>();
             ApiPollingRate = DefaultApiPollingRate.ToString();
+            OverlayPlacement = DefaultOverlayPlacement;
             HighlightThresholds = new Dictionary<string, int>();
             DisableThresholds = new Dictionary<string, int>();
         }
@@ -57,7 +64,7 @@ namespace NLOverlay
                 if (File.Exists(filePath))
                 {
                     var jsonContent = File.ReadAllText(filePath);
-                    var data = JsonSerializer.Deserialize<SettingsData>(jsonContent);
+                    var data = JsonSerializer.Deserialize<Settings>(jsonContent);
 
                     var validationResult = Validate();
 
@@ -65,6 +72,7 @@ namespace NLOverlay
                     {
                         RulesOnOverlay = data.RulesOnOverlay; 
                         ApiPollingRate = data.ApiPollingRate;
+                        OverlayPlacement = data.OverlayPlacement;
                         HighlightThresholds = data.HighlightThresholds;
                         DisableThresholds = data.DisableThresholds;
                     }
@@ -76,7 +84,7 @@ namespace NLOverlay
             }
         }
 
-        public Validation Validate()
+        public ValidationResult Validate()
         {
             var validationResults = new List<ValidationResult>();
             

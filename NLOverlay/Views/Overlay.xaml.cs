@@ -1,23 +1,23 @@
-﻿using Common;
-using Common.Services;
-using NetLimiter.Service;
+﻿using NetLimiter.Service;
+using NLOverlay.Helpers;
+using NLOverlay.Models;
+using NLOverlay.Services;
+using NLOverlay.ViewModels;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using NLOverlay.Classes;
-using NLOverlay.ViewModels;
 
-namespace NLOverlay
+namespace NLOverlay.Views
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class OverlayWindow : Window
     {
-        private readonly SettingsData _settings;
+        private Settings _settings;
         private ObservableCollection<RuleViewModel> _ruleViewModels;
         private IRuleService _ruleService;
         private readonly Helper _helper;
@@ -29,17 +29,18 @@ namespace NLOverlay
             _ruleService = new RuleService();
             _helper = new Helper();
 
-            Topmost = true;
-            
-            SetWindowPosition();
-            
-            var settings = new SettingsData();
-            _settings = new SettingsData();
+            var settings = new Settings();
+            _settings = new Settings();
             _settings.Load();
+
+            Topmost = true;
+
+            SetWindowPosition();
 
             DataContext = this;
             _ruleViewModels = new ObservableCollection<RuleViewModel>();
             rulesGrid.ItemsSource = _ruleViewModels;
+            rulesGrid.PreviewMouseDown += RulesGrid_PreviewMouseDown;
 
             Task.Run(RenderAsync);
         }
@@ -63,14 +64,65 @@ namespace NLOverlay
         private void SetWindowPosition()
         {
             var workingArea = SystemParameters.WorkArea;
-            Left = 0;
-            Top = (workingArea.Height - Height) / 2;
+
+            switch (_settings.OverlayPlacement)
+            {
+                case Enums.OverlayPlacement.TopLeft:
+                    Top = 0;
+                    Left = 0;
+                    break;
+                case Enums.OverlayPlacement.TopCenter:
+                    Top = 0;
+                    Left = (workingArea.Width - Width) / 2;
+                    break;
+                case Enums.OverlayPlacement.TopRight:
+                    Top = 0;
+                    Left = workingArea.Width - Width;
+                    break;
+                case Enums.OverlayPlacement.LeftCenter:
+                    Top = (workingArea.Height - Height) / 2;
+                    Left = 0;
+                    break;
+                case Enums.OverlayPlacement.RightCenter:
+                    Top = (workingArea.Height - Height) / 2;
+                    Left = workingArea.Width - Width;
+                    break;
+                default:
+                    // Defaults to LeftCenter
+                    Top = (workingArea.Height - Height) / 2;
+                    Left = 0;
+                    break;
+            }
         }
 
         public void LoadSettings()
         {
             _settings.Load();
             _ruleViewModels.Clear();
+
+            SetWindowPosition();
+        }
+
+        private void RulesGrid_PreviewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            var originalSource = e.OriginalSource as FrameworkElement;
+
+            if (originalSource != null)
+            {
+                Console.WriteLine($"Clicked element type: {originalSource.GetType().Name}");
+            }
+            e.Handled = true;
+        }
+
+        private void OverlayWindow_PreviewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            var originalSource = e.OriginalSource as FrameworkElement;
+
+            if (originalSource != null)
+            {
+                Console.WriteLine($"Clicked element type: {originalSource.GetType().Name}");
+            }
+            e.Handled = true;
         }
 
         #region ViewModel Stuff

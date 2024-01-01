@@ -1,6 +1,6 @@
 ﻿using NetLimiter.Service;
 
-namespace Common.Services
+namespace NLOverlay.Services
 {
     public interface IRuleService
     {

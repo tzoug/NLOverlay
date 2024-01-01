@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text;
 
-namespace Common
+namespace NLOverlay.Helpers
 {
     public static class Utils
     {
