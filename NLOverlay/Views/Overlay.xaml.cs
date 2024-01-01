@@ -6,9 +6,11 @@ using NLOverlay.ViewModels;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Interop;
 
 namespace NLOverlay.Views
 {
@@ -17,6 +19,28 @@ namespace NLOverlay.Views
     /// </summary>
     public partial class OverlayWindow : Window
     {
+        #region Window
+
+        // Import the SetWindowLong function
+        [DllImport("user32.dll")]
+        private static extern IntPtr SetWindowLong(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
+
+        // Import the GetWindowLong function
+        [DllImport("user32.dll")]
+        private static extern IntPtr GetWindowLong(IntPtr hWnd, int nIndex);
+
+        // Import the GetForegroundWindow function
+        [DllImport("user32.dll")]
+        private static extern IntPtr GetForegroundWindow();
+
+        // Constants for window styles
+        private const int GWL_HWNDPARENT = -8;
+        private const int GWL_EXSTYLE = -20;
+        private const int WS_EX_TOOLWINDOW = 0x80;
+        private const int WS_EX_NOACTIVATE = 0x08000000;
+
+        #endregion
+
         private Settings _settings;
         private ObservableCollection<RuleViewModel> _ruleViewModels;
         private IRuleService _ruleService;
@@ -34,13 +58,13 @@ namespace NLOverlay.Views
             _settings.Load();
 
             Topmost = true;
+            SourceInitialized += OverlayWindow_SourceInitialized;
 
             SetWindowPosition();
 
             DataContext = this;
             _ruleViewModels = new ObservableCollection<RuleViewModel>();
             rulesGrid.ItemsSource = _ruleViewModels;
-            rulesGrid.PreviewMouseDown += RulesGrid_PreviewMouseDown;
 
             Task.Run(RenderAsync);
         }
@@ -103,27 +127,26 @@ namespace NLOverlay.Views
             SetWindowPosition();
         }
 
-        private void RulesGrid_PreviewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            var originalSource = e.OriginalSource as FrameworkElement;
+        #region Window Events
 
-            if (originalSource != null)
-            {
-                Console.WriteLine($"Clicked element type: {originalSource.GetType().Name}");
-            }
-            e.Handled = true;
+        private void OverlayWindow_SourceInitialized(object sender, EventArgs e)
+        {
+            // Get the HWND of the game window
+            IntPtr gameWindowHandle = GetGameWindowHandle();
+
+            // Set the owner of the overlay window to be the game window
+            SetWindowLong(new WindowInteropHelper(this).Handle, GWL_HWNDPARENT, new IntPtr(gameWindowHandle.ToInt32()));
+
+            // Modify the window style to be a tool window (optional)
+            SetWindowLong(new WindowInteropHelper(this).Handle, GWL_EXSTYLE, new IntPtr(GetWindowLong(new WindowInteropHelper(this).Handle, GWL_EXSTYLE).ToInt32() | WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE));
         }
 
-        private void OverlayWindow_PreviewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private IntPtr GetGameWindowHandle()
         {
-            var originalSource = e.OriginalSource as FrameworkElement;
-
-            if (originalSource != null)
-            {
-                Console.WriteLine($"Clicked element type: {originalSource.GetType().Name}");
-            }
-            e.Handled = true;
+            return IntPtr.Zero;
         }
+
+        #endregion
 
         #region ViewModel Stuff
 
