@@ -4,15 +4,16 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Resources;
 using System.Text.Json;
 
 namespace NLOverlay.Models
 {
     public class Settings
     {
-        private const int MinApiPollingRate = 0;
-        private const int MaxApiPollingRate = 60000;
-        private const int DefaultApiPollingRate = 1000;
+        //private const int MinApiPollingRate = 0;
+        //private const int MaxApiPollingRate = 60000;
+        //private const int DefaultApiPollingRate = 1000;
         private const OverlayPlacement DefaultOverlayPlacement = OverlayPlacement.LeftCenter;
 
         /// <summary>
@@ -43,8 +44,8 @@ namespace NLOverlay.Models
 
         public Settings() {
             RulesOnOverlay = new List<string>();
-            ApiPollingRate = DefaultApiPollingRate.ToString();
-            OverlayPlacement = DefaultOverlayPlacement;
+            ApiPollingRate = Properties.Resources.DefaultApiPollingRate.ToString();
+            OverlayPlacement = (OverlayPlacement)Enum.Parse(typeof(OverlayPlacement), Properties.Resources.DefaultOverlayPlacementValue.ToString());
             HighlightThresholds = new Dictionary<string, int>();
             DisableThresholds = new Dictionary<string, int>();
         }
@@ -96,7 +97,10 @@ namespace NLOverlay.Models
 
         private void ValidateApiPollingRate(ICollection<ValidationResult> results)
         {
-            if (!int.TryParse(ApiPollingRate, out var number) || number < MinApiPollingRate || number > MaxApiPollingRate)
+            var minPollingRate = int.Parse(Properties.Resources.MinApiPollingRate);
+            var maxPollingRate = int.Parse(Properties.Resources.MaxApiPollingRate);
+
+            if (!int.TryParse(ApiPollingRate, out var number) || number < minPollingRate || number > maxPollingRate)
             {
                 results.Add(new ValidationResult("API Polling Rate must be between 0 and 60000 ms."));
             }
