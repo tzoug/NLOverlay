@@ -13,6 +13,11 @@ using NLOverlay.Helpers;
 using NLOverlay.Models;
 using HandyControl.Controls;
 using MessageBox = System.Windows.MessageBox;
+using System.ComponentModel;
+using System.Windows.Input;
+using System.Drawing;
+using Windows.UI.Xaml.Controls.Maps;
+using System.IO;
 
 namespace NLOverlay.Views
 {
@@ -23,9 +28,12 @@ namespace NLOverlay.Views
         private readonly Settings _settings;
         private readonly Helper _helper;
 
+        private NotifyIcon notifyIcon;
+
         public MainWindow()
         {
             InitializeComponent();
+            InitializeNotifyIcon();
 
             Closed += MainWindow_Closed;
 
@@ -54,7 +62,7 @@ namespace NLOverlay.Views
 
                 _ruleViewModels.Clear();
 
-                foreach (var rule in rules)
+                foreach (var rule in rules.ToList())
                 {
                     _ruleViewModels.Add(_helper.CreateRuleModel(rule, filters, _settings));
                 }
@@ -68,9 +76,49 @@ namespace NLOverlay.Views
                 .Select(r => r.Id)
                 .ToList();
         }
-        
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            base.OnClosing(e);
+
+            // Hide the main window instead of closing
+            e.Cancel = true;
+            Hide();
+        }
+
+        private void InitializeNotifyIcon()
+        {
+            var appIcon = System.Windows.Application.Current.MainWindow.Icon;
+
+            notifyIcon = new NotifyIcon
+            {
+                Icon = appIcon,
+                Text = "NLOverlay",
+                Visibility = Visibility.Visible
+            };
+
+            //notifyIcon.MouseDoubleClick += NotifyIcon_MouseDoubleClick;
+        }
+
+        private void NotifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            // Handle double-click event (e.g., restore the window)
+            Show();
+            WindowState = WindowState.Normal;
+        }
+
+        private void DisposeNotifyIcon()
+        {
+            if (notifyIcon != null)
+            {
+                //notifyIcon.MouseDoubleClick -= NotifyIcon_MouseDoubleClick;
+                //notifyIcon.Visible = false;
+                notifyIcon.Dispose();
+            }
+        }
+
         #region Events
-        
+
         private void RulesListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (RulesListView.SelectedItem is RuleViewModel selectedRule)
@@ -112,7 +160,7 @@ namespace NLOverlay.Views
 
         private void Load()
         {
-            foreach (var ruleViewModel in _ruleViewModels)
+            foreach (var ruleViewModel in _ruleViewModels.ToList())
             {
                 _helper.UpdateRuleModel(ruleViewModel, _settings);
             }
@@ -161,7 +209,7 @@ namespace NLOverlay.Views
 
         private void FileExit_Click(object sender, RoutedEventArgs e)
         {
-            Close();
+            Application.Current.Shutdown();
         }
 
         private void AdvancedSettings_Click(object sender, RoutedEventArgs e)
@@ -180,7 +228,7 @@ namespace NLOverlay.Views
 
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
-            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(e.Uri.AbsoluteUri));
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
             e.Handled = true;
         }
 

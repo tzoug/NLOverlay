@@ -35,7 +35,7 @@ There are **2** ways to run the program:
 - Option to customize colors
 - Task bar options
 
-# Ressources
+# Resources
 
 - [Fody](https://github.com/Fody/Fody)
 - [HandyControl](https://github.com/HandyOrg/HandyControl)

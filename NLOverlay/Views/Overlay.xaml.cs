@@ -175,7 +175,7 @@ namespace NLOverlay.Views
 
                             _ruleViewModels.Clear();
 
-                            foreach (var rule in activeAndOverlayRules)
+                            foreach (var rule in activeAndOverlayRules.ToList())
                             {
                                 var model = _helper.CreateRuleModel(rule, filters, _settings);
                                 _ruleViewModels.Add(model);
