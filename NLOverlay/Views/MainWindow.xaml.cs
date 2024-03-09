@@ -1,23 +1,20 @@
-﻿using System;
+﻿using HandyControl.Controls;
 using NetLimiter.Service;
+using NLOverlay.Helpers;
+using NLOverlay.Models;
+using NLOverlay.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Navigation;
-using NLOverlay.ViewModels;
-using Window = System.Windows.Window;
-using NLOverlay.Helpers;
-using NLOverlay.Models;
-using HandyControl.Controls;
-using MessageBox = System.Windows.MessageBox;
-using System.ComponentModel;
 using System.Windows.Input;
-using System.Drawing;
-using Windows.UI.Xaml.Controls.Maps;
-using System.IO;
+using System.Windows.Navigation;
+using MessageBox = System.Windows.MessageBox;
+using Window = System.Windows.Window;
 
 namespace NLOverlay.Views
 {

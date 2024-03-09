@@ -75,10 +75,14 @@ namespace NLOverlay.Views
         {
             try
             {
-                while (!_cancellationTokenSource.Token.IsCancellationRequested)
+                using (var client = new NLClient())
                 {
-                    await UpdateRulesAsync(_cancellationTokenSource.Token);
-                    await Task.Delay(TimeSpan.FromMilliseconds(_settings.ApiPollingRate.ConvertStringToInt()), _cancellationTokenSource.Token);
+                    client.Connect();
+                    while (!_cancellationTokenSource.Token.IsCancellationRequested)
+                    {
+                        await UpdateRulesAsync(client, _cancellationTokenSource.Token);
+                        await Task.Delay(TimeSpan.FromMilliseconds(_settings.ApiPollingRate.ConvertStringToInt()), _cancellationTokenSource.Token);
+                    }
                 }
             }
             catch (TaskCanceledException)
@@ -152,45 +156,40 @@ namespace NLOverlay.Views
 
         #region ViewModel Stuff
 
-        private async Task UpdateRulesAsync(CancellationToken cancellationToken)
+        private async Task UpdateRulesAsync(NLClient client, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             await Task.Run(() =>
             {
-                using (var client = new NLClient())
+                var filters = client.Filters;
+                var rules = client.Rules;
+
+                var activeAndOverlayRules = rules
+                    .Where(r => r.IsActive && _settings.RulesOnOverlay.Contains(r.Id))
+                    .ToList();
+
+                var modelsToAdd = new List<RuleViewModel>();
+                foreach (var rule in activeAndOverlayRules.ToList())
                 {
-                    client.Connect();
+                    var model = _helper.CreateRuleModel(rule, filters, _settings);
+                    modelsToAdd.Add(model);
+                }
 
-                    var filters = client.Filters;
-                    var rules = client.Rules;
-
-                    var activeAndOverlayRules = rules
-                        .Where(r => r.IsActive && _settings.RulesOnOverlay.Contains(r.Id))
-                        .ToList();
-
-                    var modelsToAdd = new List<RuleViewModel>();
-                    foreach (var rule in activeAndOverlayRules.ToList())
+                if (Application.Current?.Dispatcher != null)
+                {
+                    Application.Current.Dispatcher.Invoke(() =>
                     {
-                        var model = _helper.CreateRuleModel(rule, filters, _settings);
-                        modelsToAdd.Add(model);
-                    }
+                        cancellationToken.ThrowIfCancellationRequested();
 
-                    if (Application.Current?.Dispatcher != null)
-                    {
-                        Application.Current.Dispatcher.Invoke(() =>
+                        _ruleViewModels.Clear();
+
+                        foreach (var model in modelsToAdd)
                         {
-                            cancellationToken.ThrowIfCancellationRequested();
-
-                            _ruleViewModels.Clear();
-
-                            foreach (var model in modelsToAdd)
-                            {
-                                _ruleViewModels.Add(model);
-                                DisableRuleIfThresholdReached(model);
-                            }
-                        });
-                    }
+                            _ruleViewModels.Add(model);
+                            DisableRuleIfThresholdReached(model);
+                        }
+                    });
                 }
             }, cancellationToken);
         }
