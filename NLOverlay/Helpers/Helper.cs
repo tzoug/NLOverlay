@@ -30,8 +30,7 @@ namespace NLOverlay.Helpers
             model.HighlightThresholdEnabled = settings.HighlightThresholds.ContainsKey(model.Id);
             model.HighlightThreshold = settings.HighlightThresholds.TryGetValue(model.Id, out var highlightValue) ? highlightValue : 0;
             model.DisableThresholdEnabled = settings.DisableThresholds.ContainsKey(model.Id);
-            model.DisableThreshold =
-                settings.DisableThresholds.TryGetValue(model.Id, out var disableValue) ? disableValue : 0;
+            model.DisableThreshold = settings.DisableThresholds.TryGetValue(model.Id, out var disableValue) ? disableValue : 0;
         }
     }
 }

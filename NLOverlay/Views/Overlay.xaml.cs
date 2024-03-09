@@ -4,12 +4,14 @@ using NLOverlay.Models;
 using NLOverlay.Services;
 using NLOverlay.ViewModels;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Documents;
 using System.Windows.Interop;
 
 namespace NLOverlay.Views
@@ -167,6 +169,13 @@ namespace NLOverlay.Views
                         .Where(r => r.IsActive && _settings.RulesOnOverlay.Contains(r.Id))
                         .ToList();
 
+                    var modelsToAdd = new List<RuleViewModel>();
+                    foreach (var rule in activeAndOverlayRules.ToList())
+                    {
+                        var model = _helper.CreateRuleModel(rule, filters, _settings);
+                        modelsToAdd.Add(model);
+                    }
+
                     if (Application.Current?.Dispatcher != null)
                     {
                         Application.Current.Dispatcher.Invoke(() =>
@@ -175,11 +184,9 @@ namespace NLOverlay.Views
 
                             _ruleViewModels.Clear();
 
-                            foreach (var rule in activeAndOverlayRules.ToList())
+                            foreach (var model in modelsToAdd)
                             {
-                                var model = _helper.CreateRuleModel(rule, filters, _settings);
                                 _ruleViewModels.Add(model);
-
                                 DisableRuleIfThresholdReached(model);
                             }
                         });
