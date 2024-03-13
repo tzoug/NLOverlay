@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Media;
-using WindowsInput.Native;
 
 namespace NLOverlay.Helpers
 {

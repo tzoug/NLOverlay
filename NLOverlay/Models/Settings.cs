@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Resources;
 using System.Text.Json;
 
 namespace NLOverlay.Models
