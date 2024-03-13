@@ -9,7 +9,7 @@
     Width="350"
     Height="450"
     AllowsTransparency="True"
-    Background="#00000080"
+    Background="Transparent"
     Focusable="False"
     WindowStyle="None"
     mc:Ignorable="d">
@@ -31,8 +31,7 @@
             HeadersVisibility="None"
             IsReadOnly="True"
             ItemsSource="{Binding ruleViewModel, IsAsync=True, UpdateSourceTrigger=PropertyChanged}"
-            Opacity="0.5"
-            RowBackground="Transparent">
+            RowBackground="Black">
             <DataGrid.ColumnHeaderStyle>
                 <Style TargetType="{x:Type DataGridColumnHeader}">
                     <Setter Property="Background" Value="White" />
@@ -40,40 +39,14 @@
                 </Style>
             </DataGrid.ColumnHeaderStyle>
             <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding RuleFor}" Header="Rule">
-                    <DataGridTextColumn.ElementStyle>
-                        <Style TargetType="{x:Type TextBlock}">
-                            <Setter Property="Background" Value="Transparent" />
-                            <Setter Property="FontWeight" Value="UltraBold" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsHighlightThresholdReached}" Value="True">
-                                    <Setter Property="Foreground" Value="#FF0000" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding IsHighlightThresholdReached}" Value="False">
-                                    <Setter Property="Foreground" Value="White" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </DataGridTextColumn.ElementStyle>
-                </DataGridTextColumn>
-                <DataGridTextColumn Binding="{Binding UpdateIntervalString}" Header="Interval">
-                    <DataGridTextColumn.ElementStyle>
-                        <Style TargetType="{x:Type TextBlock}">
-                            <Setter Property="Background" Value="Transparent" />
-                            <Setter Property="FontWeight" Value="Bold" />
-                            <Setter Property="Focusable" Value="False" />
-                            <Setter Property="IsHitTestVisible" Value="False" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsHighlightThresholdReached}" Value="True">
-                                    <Setter Property="Foreground" Value="#FF0000" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding IsHighlightThresholdReached}" Value="False">
-                                    <Setter Property="Foreground" Value="White" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </DataGridTextColumn.ElementStyle>
-                </DataGridTextColumn>
+                <DataGridTextColumn
+                    x:Name="RuleForGridColumn"
+                    Binding="{Binding RuleFor}"
+                    Header="Rule" />
+                <DataGridTextColumn
+                    x:Name="IntervalStringGridColumn"
+                    Binding="{Binding UpdateIntervalString}"
+                    Header="Interval" />
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

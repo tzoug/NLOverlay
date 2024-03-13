@@ -1,4 +1,5 @@
 ﻿using NLOverlay.Enums;
+using NLOverlay.Helpers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,11 +12,6 @@ namespace NLOverlay.Models
 {
     public class Settings
     {
-        //private const int MinApiPollingRate = 0;
-        //private const int MaxApiPollingRate = 60000;
-        //private const int DefaultApiPollingRate = 1000;
-        private const OverlayPlacement DefaultOverlayPlacement = OverlayPlacement.LeftCenter;
-
         /// <summary>
         /// List of IDs of enabled rules (for overlay)
         /// </summary>
@@ -36,6 +32,34 @@ namespace NLOverlay.Models
         [Category("Advanced")]
         public OverlayPlacement OverlayPlacement { get; set; }
 
+        /// <summary>
+        /// Text background color HEX value (Ex: #FFFFFFF)
+        /// </summary>
+        [DisplayName("Text Color")]
+        [Category("Advanced")]
+        public string OverlayTextColor { get; set; }
+
+        /// <summary>
+        /// Text background color HEX value (Ex: #FFFFFFF)
+        /// </summary>
+        [DisplayName("Text Background Color")]
+        [Category("Advanced")]
+        public string OverlayTextBackgroundColor { get; set; }
+
+        /// <summary>
+        /// Threshold reached color HEX value (Ex: #FFFFFFF)
+        /// </summary>
+        [DisplayName("Threshold Reached Color")]
+        [Category("Advanced")]
+        public string OverlayTextThresholdReachColor { get; set; }
+
+        /// <summary>
+        /// Text background opacity
+        /// </summary>
+        [DisplayName("Text Background Opacity %")]
+        [Category("Advanced")]
+        public int OverlayTextBackgroundOpacity { get; set; }
+
         [Browsable(false)]
         public Dictionary<string, int> HighlightThresholds { get; set; }
         
@@ -48,6 +72,10 @@ namespace NLOverlay.Models
             OverlayPlacement = (OverlayPlacement)Enum.Parse(typeof(OverlayPlacement), Properties.Resources.DefaultOverlayPlacementValue.ToString());
             HighlightThresholds = new Dictionary<string, int>();
             DisableThresholds = new Dictionary<string, int>();
+            OverlayTextColor = "#FFFFFF";
+            OverlayTextBackgroundColor = "#000000";
+            OverlayTextThresholdReachColor = "#FF0000";
+            OverlayTextBackgroundOpacity = 50;
         }
 
         public void Save()
@@ -76,6 +104,10 @@ namespace NLOverlay.Models
                         OverlayPlacement = data.OverlayPlacement;
                         HighlightThresholds = data.HighlightThresholds;
                         DisableThresholds = data.DisableThresholds;
+                        OverlayTextColor = data.OverlayTextColor;
+                        OverlayTextBackgroundColor = data.OverlayTextBackgroundColor;
+                        OverlayTextBackgroundOpacity = data.OverlayTextBackgroundOpacity;
+                        OverlayTextThresholdReachColor = data.OverlayTextThresholdReachColor;
                     }
                 }
             }
@@ -91,6 +123,8 @@ namespace NLOverlay.Models
             
             ValidateApiPollingRate(validationResults);
             ValidateThresholds(validationResults);
+            ValidateOverlayColors(validationResults);
+            ValidateOpacity(validationResults);
 
             return new ValidationResult(validationResults);
         }
@@ -116,6 +150,39 @@ namespace NLOverlay.Models
             {
                 results.Add(new ValidationResult("Threshold values (in seconds) cannot be negative."));
                 return; // Only add it to the results once.
+            }
+        }
+
+        private void ValidateOverlayColors(ICollection<ValidationResult> results)
+        {
+            // Background color
+            OverlayTextBackgroundColor = string.IsNullOrWhiteSpace(OverlayTextBackgroundColor)
+                ? "#000000"
+                : OverlayTextBackgroundColor;
+
+            // Text color
+            OverlayTextColor = string.IsNullOrWhiteSpace(OverlayTextColor)
+            ? "#FFFFFF"
+            : OverlayTextColor;
+
+            // Threshold color
+            OverlayTextThresholdReachColor = string.IsNullOrWhiteSpace(OverlayTextThresholdReachColor)
+            ? "#FF0000"
+            : OverlayTextThresholdReachColor;
+
+            if (!Utils.IsValidHex(OverlayTextBackgroundColor) || 
+                !Utils.IsValidHex(OverlayTextColor) ||
+                !Utils.IsValidHex(OverlayTextThresholdReachColor))
+            {
+                results.Add(new ValidationResult("Invalid HEX color value."));
+            }
+        }
+
+        private void ValidateOpacity(ICollection<ValidationResult> results)
+        {
+            if (Utils.IsValidOpacity(OverlayTextBackgroundOpacity))
+            {
+                results.Add(new ValidationResult("Opacity value must be between 0 and 100."));
             }
         }
 

@@ -1,6 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Windows.Media;
+using WindowsInput.Native;
 
 namespace NLOverlay.Helpers
 {
@@ -36,6 +40,42 @@ namespace NLOverlay.Helpers
         {
             if (int.TryParse(value, out int result)) return result;
             return 0;
+        }
+
+        public static bool IsValidHex(string value)
+        {
+            // Regular expression to match hexadecimal string without #
+            string pattern = @"^#[0-9a-fA-F]{6}$";
+            return Regex.IsMatch(value, pattern);
+        }
+
+        public static bool IsValidOpacity(int value)
+        {
+            return value < 0 || value > 100;
+        }
+
+        public static string ConvertToHexWithOpacity(string colorCode, int opacity)
+        {
+            var color = (Color)ColorConverter.ConvertFromString(colorCode);
+            var alpha = (int)Math.Round((double)opacity / 100 * 255);
+
+            var transparentColor = Color.FromArgb((byte)alpha, color.R, color.G, color.B);
+            var hexString = transparentColor.ToString();
+
+            return hexString;
+        }
+
+        public static Brush ConvertHexStringToBrush(string value)
+        {
+            var converter = new BrushConverter();
+            var brush = (Brush)converter.ConvertFromString(value);
+
+            return brush;
+        }
+
+        public static double ConvertIntToXamlOpacity(int value)
+        {
+            return (double)value / 100;
         }
     }
 }

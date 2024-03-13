@@ -11,8 +11,10 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Documents;
+using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Interop;
+using System.Windows.Media;
 
 namespace NLOverlay.Views
 {
@@ -57,16 +59,15 @@ namespace NLOverlay.Views
 
             var settings = new Settings();
             _settings = new Settings();
-            _settings.Load();
 
             Topmost = true;
             SourceInitialized += OverlayWindow_SourceInitialized;
 
-            SetWindowPosition();
-
             DataContext = this;
             _ruleViewModels = new ObservableCollection<RuleViewModel>();
             rulesGrid.ItemsSource = _ruleViewModels;
+
+            Setup();
 
             Task.Run(RenderAsync);
         }
@@ -89,6 +90,49 @@ namespace NLOverlay.Views
             {
                 // Task was canceled, handle as needed
             }
+        }
+
+        private void SetCellBackgroundColor()
+        {
+            var backgroundColor = _settings.OverlayTextBackgroundColor;
+            var opacity = _settings.OverlayTextBackgroundOpacity;
+
+            var background = Utils.ConvertToHexWithOpacity(backgroundColor, opacity);
+            rulesGrid.RowBackground = Utils.ConvertHexStringToBrush(background);
+        }
+
+        private void SetCellTextColor()
+        {
+            var style = new Style(typeof(TextBlock));
+
+            // Setters
+            style.Setters.Add(new Setter(TextBlock.FontWeightProperty, FontWeights.UltraBold));
+            style.Setters.Add(new Setter(FocusableProperty, false));
+            style.Setters.Add(new Setter(IsHitTestVisibleProperty, false));
+
+            // Triggers
+            var highlightThresholdReachedTrigger = new DataTrigger
+            {
+                Binding = new Binding("IsHighlightThresholdReached"),
+                Value = true
+            };
+            var thresholdReachedColor = Utils.ConvertHexStringToBrush(_settings.OverlayTextThresholdReachColor);
+            highlightThresholdReachedTrigger.Setters.Add(new Setter(TextBlock.ForegroundProperty, thresholdReachedColor));
+
+            var notHighlightThresholdReachedTrigger = new DataTrigger
+            {
+                Binding = new Binding("IsHighlightThresholdReached"),
+                Value = false
+            };
+            
+            var textColor = Utils.ConvertHexStringToBrush(_settings.OverlayTextColor);
+            notHighlightThresholdReachedTrigger.Setters.Add(new Setter(TextBlock.ForegroundProperty, textColor));
+
+            style.Triggers.Add(highlightThresholdReachedTrigger);
+            style.Triggers.Add(notHighlightThresholdReachedTrigger);
+
+            RuleForGridColumn.ElementStyle = style;
+            IntervalStringGridColumn.ElementStyle = style;
         }
 
         private void SetWindowPosition()
@@ -125,12 +169,14 @@ namespace NLOverlay.Views
             }
         }
 
-        public void LoadSettings()
+        public void Setup()
         {
             _settings.Load();
             _ruleViewModels.Clear();
 
             SetWindowPosition();
+            SetCellBackgroundColor();
+            SetCellTextColor();
         }
 
         #region Window Events

@@ -181,7 +181,7 @@ namespace NLOverlay.Views
                 MessageBox.Show("Saved", "Save");
                 
                 // Refresh the overlay settings
-                _overlayWindow?.LoadSettings();
+                _overlayWindow?.Setup();
             }
             else
             {
@@ -220,7 +220,7 @@ namespace NLOverlay.Views
 
         private void UpdateOverlay_Click(object sender, RoutedEventArgs e)
         {
-            _overlayWindow.LoadSettings();
+            _overlayWindow.Setup();
         }
 
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
