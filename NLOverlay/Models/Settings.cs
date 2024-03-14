@@ -22,7 +22,7 @@ namespace NLOverlay.Models
         /// </summary>
         [DisplayName("API Polling Rate (ms)")]
         [Category("Advanced")]
-        public string ApiPollingRate { get; set; }
+        public int ApiPollingRate { get; set; }
 
         /// <summary>
         /// Placement of overlay window
@@ -67,14 +67,14 @@ namespace NLOverlay.Models
 
         public Settings() {
             RulesOnOverlay = new List<string>();
-            ApiPollingRate = Properties.Resources.DefaultApiPollingRate.ToString();
+            ApiPollingRate = Utils.ConvertStringToInt(Properties.Resources.DefaultApiPollingRate.ToString());
             OverlayPlacement = (OverlayPlacement)Enum.Parse(typeof(OverlayPlacement), Properties.Resources.DefaultOverlayPlacementValue.ToString());
             HighlightThresholds = new Dictionary<string, int>();
             DisableThresholds = new Dictionary<string, int>();
-            OverlayTextColor = "#FFFFFF";
-            OverlayTextBackgroundColor = "#000000";
-            OverlayTextThresholdReachColor = "#FF0000";
-            OverlayTextBackgroundOpacity = 50;
+            OverlayTextColor = Properties.Resources.DefaultOverlayTextColor.ToString();
+            OverlayTextBackgroundColor = Properties.Resources.DefaultOverlayBackgroundColor.ToString();
+            OverlayTextThresholdReachColor = Properties.Resources.DefaultOverlayThresholdReachedColor.ToString(); ;
+            OverlayTextBackgroundOpacity = Utils.ConvertStringToInt(Properties.Resources.DefaultOverlayBackgroundOpacity.ToString());
         }
 
         public void Save()
@@ -133,7 +133,7 @@ namespace NLOverlay.Models
             var minPollingRate = int.Parse(Properties.Resources.MinApiPollingRate);
             var maxPollingRate = int.Parse(Properties.Resources.MaxApiPollingRate);
 
-            if (!int.TryParse(ApiPollingRate, out var number) || number < minPollingRate || number > maxPollingRate)
+            if (ApiPollingRate < minPollingRate || ApiPollingRate > maxPollingRate)
             {
                 results.Add(new ValidationResult("API Polling Rate must be between 0 and 60000 ms."));
             }

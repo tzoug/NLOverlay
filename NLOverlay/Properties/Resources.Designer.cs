@@ -61,11 +61,29 @@ namespace NLOverlay.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 1000.
+        ///   Looks up a localized string similar to 100.
         /// </summary>
         public static string DefaultApiPollingRate {
             get {
                 return ResourceManager.GetString("DefaultApiPollingRate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to #000000.
+        /// </summary>
+        public static string DefaultOverlayBackgroundColor {
+            get {
+                return ResourceManager.GetString("DefaultOverlayBackgroundColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 50.
+        /// </summary>
+        public static string DefaultOverlayBackgroundOpacity {
+            get {
+                return ResourceManager.GetString("DefaultOverlayBackgroundOpacity", resourceCulture);
             }
         }
         
@@ -75,6 +93,24 @@ namespace NLOverlay.Properties {
         public static string DefaultOverlayPlacementValue {
             get {
                 return ResourceManager.GetString("DefaultOverlayPlacementValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to #FFFFFF.
+        /// </summary>
+        public static string DefaultOverlayTextColor {
+            get {
+                return ResourceManager.GetString("DefaultOverlayTextColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to #FF0000.
+        /// </summary>
+        public static string DefaultOverlayThresholdReachedColor {
+            get {
+                return ResourceManager.GetString("DefaultOverlayThresholdReachedColor", resourceCulture);
             }
         }
         

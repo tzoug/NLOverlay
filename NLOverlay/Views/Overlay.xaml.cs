@@ -81,7 +81,7 @@ namespace NLOverlay.Views
                     while (!_cancellationTokenSource.Token.IsCancellationRequested)
                     {
                         await UpdateRulesAsync(client, _cancellationTokenSource.Token);
-                        await Task.Delay(TimeSpan.FromMilliseconds(_settings.ApiPollingRate.ConvertStringToInt()), _cancellationTokenSource.Token);
+                        await Task.Delay(TimeSpan.FromMilliseconds(_settings.ApiPollingRate), _cancellationTokenSource.Token);
                     }
                 }
             }

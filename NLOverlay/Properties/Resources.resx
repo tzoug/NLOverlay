@@ -118,12 +118,28 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="DefaultApiPollingRate" xml:space="preserve">
-    <value>1000</value>
+    <value>100</value>
     <comment>In ms, 1 sec</comment>
+  </data>
+  <data name="DefaultOverlayBackgroundColor" xml:space="preserve">
+    <value>#000000</value>
+    <comment>HEX value for black</comment>
+  </data>
+  <data name="DefaultOverlayBackgroundOpacity" xml:space="preserve">
+    <value>50</value>
+    <comment>In percentage</comment>
   </data>
   <data name="DefaultOverlayPlacementValue" xml:space="preserve">
     <value>3</value>
     <comment>Value 3 in OverlayPlacement enum</comment>
+  </data>
+  <data name="DefaultOverlayTextColor" xml:space="preserve">
+    <value>#FFFFFF</value>
+    <comment>HEX value for white</comment>
+  </data>
+  <data name="DefaultOverlayThresholdReachedColor" xml:space="preserve">
+    <value>#FF0000</value>
+    <comment>HEX value for red</comment>
   </data>
   <data name="MaxApiPollingRate" xml:space="preserve">
     <value>60000</value>
