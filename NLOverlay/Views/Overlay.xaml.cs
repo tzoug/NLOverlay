@@ -47,28 +47,37 @@ namespace NLOverlay.Views
         private Settings _settings;
         private ObservableCollection<RuleViewModel> _ruleViewModels;
         private IRuleService _ruleService;
-        private readonly Helper _helper;
         private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
 
         public OverlayWindow()
         {
             InitializeComponent();
             _ruleService = new RuleService();
-            _helper = new Helper();
 
-            var settings = new Settings();
+            _ruleViewModels = new ObservableCollection<RuleViewModel>();
             _settings = new Settings();
 
             Topmost = true;
             SourceInitialized += OverlayWindow_SourceInitialized;
 
-            DataContext = this;
-            _ruleViewModels = new ObservableCollection<RuleViewModel>();
-            rulesGrid.ItemsSource = _ruleViewModels;
-
             Setup();
+            DataContext = new
+            {
+                Settings = _settings,
+                RuleViewModels = _ruleViewModels,
+            };
+            RulesItemControl.ItemsSource = _ruleViewModels;
 
             Task.Run(RenderAsync);
+        }
+
+        public void Setup()
+        {
+            _settings.Load();
+            _ruleViewModels.Clear();
+
+            SetWindowPosition();
+            //SetStyling();
         }
 
         private async Task RenderAsync()
@@ -91,47 +100,47 @@ namespace NLOverlay.Views
             }
         }
 
-        private void SetCellBackgroundColor()
+        private Style CreateTextBlockStyling()
         {
-            var backgroundColor = _settings.OverlayTextBackgroundColor;
-            var opacity = _settings.OverlayTextBackgroundOpacity;
+            var textBlockStyle = new Style();
 
-            var background = Utils.ConvertToHexWithOpacity(backgroundColor, opacity);
-            rulesGrid.RowBackground = Utils.ConvertHexStringToBrush(background);
-        }
+            // Font weight and size
+            textBlockStyle.Setters.Add(new Setter(TextBlock.BackgroundProperty, _settings.OverlayBackgroundBrush));
 
-        private void SetCellTextColor()
-        {
-            var style = new Style(typeof(TextBlock));
-
-            // Setters
-            style.Setters.Add(new Setter(TextBlock.FontWeightProperty, FontWeights.UltraBold));
-            style.Setters.Add(new Setter(FocusableProperty, false));
-            style.Setters.Add(new Setter(IsHitTestVisibleProperty, false));
-
-            // Triggers
-            var highlightThresholdReachedTrigger = new DataTrigger
+            var textColorChangeTrigger = new DataTrigger
             {
                 Binding = new Binding("IsHighlightThresholdReached"),
                 Value = true
             };
-            var thresholdReachedColor = Utils.ConvertHexStringToBrush(_settings.OverlayTextThresholdReachColor);
-            highlightThresholdReachedTrigger.Setters.Add(new Setter(TextBlock.ForegroundProperty, thresholdReachedColor));
+            var colorChangeBrush = Utils.ConvertHexColorToBrush(_settings.OverlayTextThresholdReachColor);
+            textColorChangeTrigger.Setters.Add(new Setter(TextBlock.ForegroundProperty, colorChangeBrush));
 
-            var notHighlightThresholdReachedTrigger = new DataTrigger
+            var textColorDefaultTrigger = new DataTrigger
             {
                 Binding = new Binding("IsHighlightThresholdReached"),
                 Value = false
             };
-            
-            var textColor = Utils.ConvertHexStringToBrush(_settings.OverlayTextColor);
-            notHighlightThresholdReachedTrigger.Setters.Add(new Setter(TextBlock.ForegroundProperty, textColor));
+            var defaultColorBrush = Utils.ConvertHexColorToBrush(_settings.OverlayTextColor);
+            textColorChangeTrigger.Setters.Add(new Setter(TextBlock.ForegroundProperty, defaultColorBrush));
 
-            style.Triggers.Add(highlightThresholdReachedTrigger);
-            style.Triggers.Add(notHighlightThresholdReachedTrigger);
+            textBlockStyle.Triggers.Add(textColorDefaultTrigger);
+            textBlockStyle.Triggers.Add(textColorChangeTrigger);
 
-            RuleForGridColumn.ElementStyle = style;
-            IntervalStringGridColumn.ElementStyle = style;
+            return textBlockStyle;
+        }
+
+        private void SetStyling()
+        {
+            var textBlockStyle = CreateTextBlockStyling();
+
+            // Apply it to the TextBlock
+            foreach (var item in RulesItemControl.Items)
+            {
+                if (item is TextBlock textBlock)
+                {
+                    textBlock.Style = textBlockStyle;
+                }
+            }
         }
 
         private void SetWindowPosition()
@@ -140,23 +149,23 @@ namespace NLOverlay.Views
 
             switch (_settings.OverlayPlacement)
             {
-                case Enums.OverlayPlacement.TopLeft:
+                case Enums.OverlayPlacements.TopLeft:
                     Top = 0;
                     Left = 0;
                     break;
-                case Enums.OverlayPlacement.TopCenter:
+                case Enums.OverlayPlacements.TopCenter:
                     Top = 0;
                     Left = (workingArea.Width - Width) / 2;
                     break;
-                case Enums.OverlayPlacement.TopRight:
+                case Enums.OverlayPlacements.TopRight:
                     Top = 0;
                     Left = workingArea.Width - Width;
                     break;
-                case Enums.OverlayPlacement.LeftCenter:
+                case Enums.OverlayPlacements.LeftCenter:
                     Top = (workingArea.Height - Height) / 2;
                     Left = 0;
                     break;
-                case Enums.OverlayPlacement.RightCenter:
+                case Enums.OverlayPlacements.RightCenter:
                     Top = (workingArea.Height - Height) / 2;
                     Left = workingArea.Width - Width;
                     break;
@@ -166,16 +175,6 @@ namespace NLOverlay.Views
                     Left = 0;
                     break;
             }
-        }
-
-        public void Setup()
-        {
-            _settings.Load();
-            _ruleViewModels.Clear();
-
-            SetWindowPosition();
-            SetCellBackgroundColor();
-            SetCellTextColor();
         }
 
         #region Window Events
@@ -217,7 +216,7 @@ namespace NLOverlay.Views
                 var modelsToAdd = new List<RuleViewModel>();
                 foreach (var rule in activeAndOverlayRules.ToList())
                 {
-                    var model = _helper.CreateRuleModel(rule, filters, _settings);
+                    var model = _ruleService.CreateRuleModel(rule, filters, _settings);
                     modelsToAdd.Add(model);
                 }
 
