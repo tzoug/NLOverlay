@@ -1,7 +1,6 @@
 ﻿using NetLimiter.Service;
 using System;
 using System.ComponentModel;
-using NLInfoTools;
 
 namespace NLOverlay.ViewModels
 {
@@ -157,6 +156,14 @@ namespace NLOverlay.ViewModels
                 return elapsedTime.TotalMinutes > 1
                     ? $"{elapsedTime.Minutes}m.{elapsedTime.Seconds}s.{elapsedTime.Milliseconds}ms"
                     : $"{elapsedTime.Seconds}s.{elapsedTime.Milliseconds}ms";
+            }
+        }
+
+        public string RuleNameAndInterval
+        {
+            get
+            {
+                return $" {RuleFor} {UpdateIntervalString} ";
             }
         }
 

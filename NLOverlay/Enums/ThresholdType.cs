@@ -2,7 +2,7 @@
 {
     public enum ThresholdType
     {
-        Flash,
+        Highlight,
         Disable
     }
 }
