@@ -1,4 +1,4 @@
-# ![Favicon](NLOverlay/Assets/applicationIcon_32x32.png "NLOverlay") NLOverlay [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+# ![Favicon](Assets/applicationIcon_32x32.png "NLOverlay") NLOverlay [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 NLOverlay is a Windows overlay designed for NetLimiter, providing a clear view of active rules and their duration.
 
