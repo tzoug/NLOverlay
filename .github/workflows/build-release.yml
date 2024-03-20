@@ -3,48 +3,56 @@ name: Build and Release
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
 
 jobs:
   build:
     runs-on: windows-2019
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-    
-    - name: Setup MSBuild
-      uses: microsoft/setup-msbuild@v1
-    
-    - name: Setup NuGet
-      uses: NuGet/setup-nuget@v1.0.5
-      
-    - name: setup-msbuild
-      uses: microsoft/setup-msbuild@v1.1
-    
-    - name: Restore Packages
-      run: nuget restore NLOverlay.sln
-    
-    - name: Build solution
-      run: msbuild NLOverlay.sln -t:rebuild -property:Configuration=Release
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        draft: false
-        prerelease: false
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v1
 
-    - name: Upload EXE Asset        
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./NLOverlay/bin/Release/NLOverlay.exe
-        asset_name: NLOverlay.exe
-        asset_content_type: application/octet-stream        
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v1.0.5
+
+      - name: setup-msbuild
+        uses: microsoft/setup-msbuild@v1.1
+
+      - name: Restore Packages
+        run: nuget restore NLOverlay.sln
+
+      - name: Build Solution
+        run: msbuild NLOverlay.sln -t:rebuild -property:Configuration=Release
+
+      - name: Publish Application
+        run: dotnet publish NLOverlay/NLOverlay.csproj -c Release -o ./publish
+
+      - name: Zip Files
+        run: |
+          mkdir zipped
+          7z a -tzip zipped/NLOverlay_Setup.zip ./publish/*
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      - name: Upload EXE Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./zipped/NLOverlay_Setup.zip
+          asset_name: NLOverlay_Setup.zip
+          asset_content_type: application/zip
