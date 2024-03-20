@@ -86,7 +86,7 @@
                         FontTypography="Subtitle"
                         Foreground="White"
                         Text="Overlay"
-                        ToolTipService.ToolTip="Set the rule color in the overlay when a specific threshold (in seconds) is reached" />
+                        ToolTipService.ToolTip="When enabled, if the rule is active, it will show on the overlay" />
 
                     <ui:ToggleSwitch
                         x:Name="RuleOnOverlaySwitch"
@@ -95,7 +95,7 @@
                         IsChecked="{Binding SelectedItem.ShowOnOverlay, ElementName=RuleNamesListView}"
                         OffContent="Disabled"
                         OnContent="Enabled"
-                        ToolTipService.ToolTip="Whether or not this rule appears on the overlay" />
+                        ToolTipService.ToolTip="When enabled, if the rule is active, it will show on the overlay" />
 
                     <ui:TextBlock
                         x:Name="ThresholdSectionTitle"
@@ -104,7 +104,7 @@
                         FontTypography="Subtitle"
                         Foreground="White"
                         Text="Color Change Threshold"
-                        ToolTipService.ToolTip="Set the rule color in the overlay when a specific threshold (in seconds) is reached" />
+                        ToolTipService.ToolTip="When enabled, the rule color (defined in settings) will change in the overlay once the specified threshold has been reached" />
 
                     <ui:ToggleSwitch
                         x:Name="RuleHighlightThresholdSwitch"
@@ -112,7 +112,8 @@
                         Margin="5"
                         IsChecked="{Binding SelectedItem.HighlightThresholdEnabled, ElementName=RuleNamesListView}"
                         OffContent="Disabled"
-                        OnContent="Enabled" />
+                        OnContent="Enabled"
+                        ToolTipService.ToolTip="When enabled, the rule color (defined in settings) will change in the overlay once the specified threshold has been reached" />
 
                     <TextBox
                         x:Name="RuleHighlightThresholdValue"
@@ -128,7 +129,7 @@
                         FontTypography="Subtitle"
                         Foreground="White"
                         Text="Auto-Disable Rule"
-                        ToolTipService.ToolTip="Set the rule color in the overlay when a specific threshold (in seconds) is reached" />
+                        ToolTipService.ToolTip="When enabled, the rule will be disabled once the specified threshold has been reached" />
 
                     <ui:ToggleSwitch
                         x:Name="RuleDisableThresholdSwitch"
@@ -136,7 +137,8 @@
                         Margin="5"
                         IsChecked="{Binding SelectedItem.DisableThresholdEnabled, ElementName=RuleNamesListView}"
                         OffContent="Disabled"
-                        OnContent="Enabled" />
+                        OnContent="Enabled"
+                        ToolTipService.ToolTip="When enabled, the rule will be disabled once the specified threshold has been reached" />
 
                     <TextBox
                         x:Name="RuleDisableThresholdValue"
