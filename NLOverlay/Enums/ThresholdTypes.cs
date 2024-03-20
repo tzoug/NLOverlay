@@ -1,6 +1,6 @@
 ﻿namespace NLOverlay.Enums
 {
-    public enum ThresholdType
+    public enum ThresholdTypes
     {
         Highlight,
         Disable

@@ -68,10 +68,10 @@ namespace NLOverlay.Views
 
             var areAllInputsValid = true;
 
-            var userInputs = new Dictionary<(ToggleSwitch, TextBox), ThresholdType>
+            var userInputs = new Dictionary<(ToggleSwitch, TextBox), ThresholdTypes>
             {
-                { (RuleHighlightThresholdSwitch, RuleHighlightThresholdValue), ThresholdType.Highlight },
-                { (RuleDisableThresholdSwitch, RuleDisableThresholdValue), ThresholdType.Disable},
+                { (RuleHighlightThresholdSwitch, RuleHighlightThresholdValue), ThresholdTypes.Highlight },
+                { (RuleDisableThresholdSwitch, RuleDisableThresholdValue), ThresholdTypes.Disable},
             };
 
             var enabledInputs = userInputs.Where(u => (bool)u.Key.Item1.IsChecked);
@@ -94,7 +94,7 @@ namespace NLOverlay.Views
             }
         }
 
-        private void ValidateInputs(IEnumerable<KeyValuePair<(ToggleSwitch, TextBox), ThresholdType>> inputs, ref bool areAllInputsValid)
+        private void ValidateInputs(IEnumerable<KeyValuePair<(ToggleSwitch, TextBox), ThresholdTypes>> inputs, ref bool areAllInputsValid)
         {
             foreach (var input in inputs)
             {
@@ -110,19 +110,19 @@ namespace NLOverlay.Views
             }
         }
 
-        private void UpdateSettings(IEnumerable<KeyValuePair<(ToggleSwitch, TextBox), ThresholdType>> enabledInputs, IEnumerable<KeyValuePair<(ToggleSwitch, TextBox), ThresholdType>> disabledInputs)
+        private void UpdateSettings(IEnumerable<KeyValuePair<(ToggleSwitch, TextBox), ThresholdTypes>> enabledInputs, IEnumerable<KeyValuePair<(ToggleSwitch, TextBox), ThresholdTypes>> disabledInputs)
         {
             foreach (var input in enabledInputs)
             {
                 var thresholdType = input.Value;
                 var ruleId = selectedRule.Id;
 
-                if (thresholdType == ThresholdType.Highlight)
+                if (thresholdType == ThresholdTypes.Highlight)
                 {
                     var highlightThreshold = GetKeyValuePairToSave(selectedRule, input.Key.Item2);
                     settings.InsertOrUpdateThresholdRecord(settings.HighlightThresholds, highlightThreshold);
                 }
-                else if (thresholdType == ThresholdType.Disable)
+                else if (thresholdType == ThresholdTypes.Disable)
                 {
                     var disableThreshold = GetKeyValuePairToSave(selectedRule, input.Key.Item2);
                     settings.InsertOrUpdateThresholdRecord(settings.DisableThresholds, disableThreshold);
@@ -136,11 +136,11 @@ namespace NLOverlay.Views
                 var thresholdType = input.Value;
                 var ruleId = selectedRule.Id;
 
-                if (thresholdType == ThresholdType.Highlight)
+                if (thresholdType == ThresholdTypes.Highlight)
                 {
                     settings.RemoveThresholdRecord(settings.HighlightThresholds, ruleId);
                 }
-                else if (thresholdType == ThresholdType.Disable)
+                else if (thresholdType == ThresholdTypes.Disable)
                 {
                     settings.RemoveThresholdRecord(settings.DisableThresholds, ruleId);
                 }

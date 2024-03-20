@@ -1,15 +1,15 @@
 ﻿using System.ComponentModel;
 using NLOverlay.Enums;
 
-namespace NLOverlay.Classes
+namespace NLOverlay.ViewModels
 {
-    public class Threshold : INotifyPropertyChanged
+    public class ThresholdViewModel : INotifyPropertyChanged
     {
-        private ThresholdType _type;
+        private ThresholdTypes _type;
         private bool _state;
         private int _limit;
 
-        public ThresholdType Type
+        public ThresholdTypes Type
         {
             get => _type;
             set

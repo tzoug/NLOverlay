@@ -31,7 +31,7 @@
     <TargetCulture>en</TargetCulture>
     <ProductName>NLOverlay</ProductName>
     <PublisherName>tzoug</PublisherName>
-    <ApplicationRevision>3</ApplicationRevision>
+    <ApplicationRevision>4</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -265,9 +265,9 @@
     <Compile Include="Models\Settings.cs" />
     <Compile Include="Services\IRuleService.cs" />
     <Compile Include="Services\RuleService.cs" />
-    <Compile Include="Classes\Threshold.cs" />
+    <Compile Include="ViewModels\ThresholdViewModel.cs" />
     <Compile Include="Enums\OverlayPlacements.cs" />
-    <Compile Include="Enums\ThresholdType.cs" />
+    <Compile Include="Enums\ThresholdTypes.cs" />
     <Compile Include="Views\AboutView.xaml.cs">
       <DependentUpon>AboutView.xaml</DependentUpon>
     </Compile>
@@ -370,7 +370,6 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include=".nuget\mouse-keyboard-hook-logo.png" />
     <Content Include="Assets\applicationIcon.svg" />
     <Resource Include="applicationIcon.ico" />
     <Resource Include="Assets\applicationIcon.ico" />
