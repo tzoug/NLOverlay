@@ -1,0 +1,142 @@
+﻿<UserControl
+    x:Class="NLOverlay.Views.SettingsView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <Grid HorizontalAlignment="Stretch">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="4*" />
+            <ColumnDefinition Width="3*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition x:Name="SettingsInfoRow" Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!--  Title  -->
+        <Grid
+            Grid.Row="0"
+            Grid.ColumnSpan="3"
+            Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="6*" />
+                <ColumnDefinition Width="2*" />
+            </Grid.ColumnDefinitions>
+
+            <ui:TextBlock
+                Grid.Column="0"
+                Height="50"
+                VerticalAlignment="Center"
+                FontTypography="Title"
+                Foreground="White"
+                Text="Settings" />
+
+            <ui:InfoBar
+                x:Name="SettingsInfoBar"
+                Title=""
+                Grid.Column="1"
+                Margin="0"
+                VerticalAlignment="Center"
+                IsOpen="True" />
+
+            <ui:Button
+                x:Name="SettingsSaveButton"
+                Grid.Column="2"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Appearance="Primary"
+                Click="SettingsSaveButton_Click"
+                Content="Save"
+                Icon="Fluent24" />
+        </Grid>
+
+
+        <ScrollViewer
+            Grid.Row="1"
+            Grid.ColumnSpan="2"
+            Margin="10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="4*" />
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="4*" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" VerticalAlignment="Top">
+                    <ui:TextBlock
+                        Margin="0,0,0,5"
+                        FontTypography="BodyStrong"
+                        Foreground="White"
+                        Text="Polling Rate (ms)" />
+
+                    <TextBox x:Name="PollingRateTextBox" Text="{Binding ApiPollingRate}" />
+
+                    <ui:TextBlock
+                        Margin="0,10,0,5"
+                        FontTypography="BodyStrong"
+                        Foreground="White"
+                        Text="Overlay Placement" />
+
+                    <ComboBox x:Name="OverlayPlacementComboBox" SelectedItem="{Binding OverlayPlacement}" />
+
+                    <ui:TextBlock
+                        Margin="0,10,0,5"
+                        FontTypography="BodyStrong"
+                        Foreground="White"
+                        Text="Overlay Text Color" />
+
+                    <TextBox x:Name="OverlayTextColor" Text="{Binding OverlayTextColor}" />
+
+                    <ui:TextBlock
+                        Margin="0,10,0,5"
+                        FontTypography="BodyStrong"
+                        Foreground="White"
+                        Text="Overlay Font Size" />
+
+                    <ComboBox x:Name="OverlayFontSizeComboBox" SelectedItem="{Binding OverlayFontSize}" />
+
+                    <ui:TextBlock
+                        Margin="0,10,0,5"
+                        FontTypography="BodyStrong"
+                        Foreground="White"
+                        Text="Overlay Font Weight" />
+
+                    <ComboBox x:Name="OverlayFontWeightComboBox" SelectedItem="{Binding OverlayFontWeight}" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="2" VerticalAlignment="Top">
+                    <ui:TextBlock
+                        Margin="0,0,0,5"
+                        FontTypography="BodyStrong"
+                        Foreground="White"
+                        Text="Overlay Background Color" />
+
+                    <TextBox x:Name="OverlayBackground" Text="{Binding OverlayBackgroundColor}" />
+
+                    <ui:TextBlock
+                        Margin="0,10,0,5"
+                        FontTypography="BodyStrong"
+                        Foreground="White"
+                        Text="Overlay Background Opacity" />
+
+                    <TextBox x:Name="OverlayBackgroundOpacity" Text="{Binding OverlayBackgroundOpacity}" />
+
+                    <ui:TextBlock
+                        Margin="0,10,0,5"
+                        FontTypography="BodyStrong"
+                        Foreground="White"
+                        Text="Threshold Reached Color" />
+
+                    <TextBox x:Name="OverlayThresholdReachedColor" Text="{Binding OverlayTextThresholdReachColor}" />
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

@@ -1,0 +1,157 @@
+﻿<UserControl
+    x:Class="NLOverlay.Views.RulesView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:localViewModels="clr-namespace:NLOverlay.ViewModels"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3.5*" />
+            <ColumnDefinition Width="6.5*" />
+        </Grid.ColumnDefinitions>
+
+        <!--  Rules List Grid (Row)  -->
+        <Grid Grid.Column="0" Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <ui:TextBlock
+                x:Name="RulesListTitle"
+                Grid.Row="0"
+                FontTypography="Title"
+                Foreground="White"
+                Text="Rules" />
+
+            <ListView
+                x:Name="RuleNamesListView"
+                Grid.Row="1"
+                Margin="5,10,5,5"
+                SelectionChanged="RuleNamesListView_SelectionChanged">
+                <ListView.ItemTemplate>
+                    <DataTemplate DataType="{x:Type localViewModels:RuleViewModel}">
+                        <TextBlock Margin="8,4" Text="{Binding RuleFor}" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+
+        <!--  Rule settings grid (row)  -->
+        <Grid Grid.Column="1" Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="6.5*" />
+                <RowDefinition Height="1*" />
+            </Grid.RowDefinitions>
+
+            <!--  Horizontal bar with Rule name and save button  -->
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="9*" />
+                    <ColumnDefinition Width="2*" />
+                </Grid.ColumnDefinitions>
+                <ui:TextBlock
+                    x:Name="SelectedRuleLabel"
+                    Grid.Column="0"
+                    HorizontalAlignment="Left"
+                    FontTypography="Title"
+                    Foreground="White"
+                    Text="{Binding SelectedItem.RuleFor, ElementName=RuleNamesListView}" />
+
+                <ui:Button
+                    x:Name="RulesSaveButton"
+                    Grid.Column="1"
+                    HorizontalAlignment="Right"
+                    Appearance="Primary"
+                    Click="RulesSaveButton_Click"
+                    Content="Save"
+                    Icon="Fluent24" />
+            </Grid>
+
+            <ScrollViewer
+                x:Name="ScrollViewer"
+                Grid.Row="1"
+                Margin="0">
+                <StackPanel>
+                    <ui:TextBlock
+                        x:Name="ShowOnOverlaySectionTitle"
+                        Grid.Row="1"
+                        Margin="5,5,5,5"
+                        FontTypography="Subtitle"
+                        Foreground="White"
+                        Text="Overlay"
+                        ToolTipService.ToolTip="Set the rule color in the overlay when a specific threshold (in seconds) is reached" />
+
+                    <ui:ToggleSwitch
+                        x:Name="RuleOnOverlaySwitch"
+                        Grid.Row="2"
+                        Margin="5"
+                        IsChecked="{Binding SelectedItem.ShowOnOverlay, ElementName=RuleNamesListView}"
+                        OffContent="Disabled"
+                        OnContent="Enabled"
+                        ToolTipService.ToolTip="Whether or not this rule appears on the overlay" />
+
+                    <ui:TextBlock
+                        x:Name="ThresholdSectionTitle"
+                        Grid.Row="3"
+                        Margin="5,10,5,5"
+                        FontTypography="Subtitle"
+                        Foreground="White"
+                        Text="Color Change Threshold"
+                        ToolTipService.ToolTip="Set the rule color in the overlay when a specific threshold (in seconds) is reached" />
+
+                    <ui:ToggleSwitch
+                        x:Name="RuleHighlightThresholdSwitch"
+                        Grid.Row="4"
+                        Margin="5"
+                        IsChecked="{Binding SelectedItem.HighlightThresholdEnabled, ElementName=RuleNamesListView}"
+                        OffContent="Disabled"
+                        OnContent="Enabled" />
+
+                    <TextBox
+                        x:Name="RuleHighlightThresholdValue"
+                        Grid.Row="5"
+                        Margin="5"
+                        IsEnabled="{Binding IsChecked, ElementName=RuleHighlightThresholdSwitch}"
+                        Text="{Binding SelectedItem.HighlightThreshold, ElementName=RuleNamesListView}" />
+
+                    <ui:TextBlock
+                        x:Name="AutoDisableRuleTitle"
+                        Grid.Row="6"
+                        Margin="5,10,5,5"
+                        FontTypography="Subtitle"
+                        Foreground="White"
+                        Text="Auto-Disable Rule"
+                        ToolTipService.ToolTip="Set the rule color in the overlay when a specific threshold (in seconds) is reached" />
+
+                    <ui:ToggleSwitch
+                        x:Name="RuleDisableThresholdSwitch"
+                        Grid.Row="7"
+                        Margin="5"
+                        IsChecked="{Binding SelectedItem.DisableThresholdEnabled, ElementName=RuleNamesListView}"
+                        OffContent="Disabled"
+                        OnContent="Enabled" />
+
+                    <TextBox
+                        x:Name="RuleDisableThresholdValue"
+                        Grid.Row="8"
+                        Margin="5"
+                        IsEnabled="{Binding IsChecked, ElementName=RuleDisableThresholdSwitch}"
+                        Text="{Binding SelectedItem.DisableThreshold, ElementName=RuleNamesListView}" />
+                </StackPanel>
+            </ScrollViewer>
+            <ui:InfoBar
+                x:Name="InfoBar"
+                Title=""
+                Grid.Row="2"
+                Margin="5"
+                IsOpen="True" />
+        </Grid>
+    </Grid>
+</UserControl>
