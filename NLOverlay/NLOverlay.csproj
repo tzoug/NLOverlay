@@ -372,6 +372,7 @@
   <ItemGroup>
     <Content Include=".nuget\mouse-keyboard-hook-logo.png" />
     <Content Include="Assets\applicationIcon.svg" />
+    <Resource Include="Assets\applicationIcon_32x32.png" />
     <Resource Include="applicationIcon.ico" />
     <Resource Include="Assets\applicationIcon.ico" />
     <Resource Include="Assets\applicationIcon.png" />
