@@ -29,7 +29,7 @@ jobs:
         run: msbuild NLOverlay.sln -t:rebuild -property:Configuration=Release
 
       - name: Publish Application
-        run: dotnet publish NLOverlay/NLOverlay.csproj -c Release -o ./publish
+        run: dotnet publish -c Release -o ./publish -r linux-x64 NLOverlay/NLOverlay.csproj
 
       - name: Zip Files
         run: |
